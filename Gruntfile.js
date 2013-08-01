@@ -1,4 +1,5 @@
-var fs = require("fs");
+var fs = require("fs")
+  , rho = require("rho");
 
 module.exports = function(grunt) {
 
@@ -10,7 +11,7 @@ module.exports = function(grunt) {
 
     browserify: {
       basic: {
-        src: ['lib/scalpel.js'],
+        src: ['lib/bundle.js'],
         dest: 'build/scalpel-<%=pkg.version%>.js'
       }
     },
@@ -30,7 +31,11 @@ module.exports = function(grunt) {
         options: {
           pretty: true,
           data: {
-            pkg: pkg
+            pkg: pkg,
+            rho: function(file) {
+              var text = fs.readFileSync(file, { encoding: 'utf-8' });
+              return rho.toHtml(text);
+            }
           }
         },
         files: {

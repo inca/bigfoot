@@ -2,7 +2,6 @@
   "name": "scalpeljs",
   "version": "0.2.0",
   "description": "UI microframework based off jQuery",
-  "main": "lib/scalpel.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/inca/scalpeljs"
@@ -28,6 +27,7 @@
     "grunt-browserify": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*",
-    "grunt-contrib-jade": "*"
+    "grunt-contrib-jade": "*",
+    "rho": "*"
   }
 }

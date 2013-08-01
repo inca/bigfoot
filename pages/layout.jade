@@ -3,8 +3,21 @@ html
   head
     title ScalpelJS — UI microframework for jQuery
 
-    script(src='http://code.jquery.com/jquery-2.0.3.js')
+    link(rel='stylesheet', href='./assets/css/main.css')
+
+    script(src='./assets/js/jquery-2.0.3.min.js')
+    script(src='./assets/js/highlight.web.js')
     script(src='./build/scalpel-#{pkg.version}.js')
   body
-    #content
-      block content
+    #notices
+    #outer
+      #header
+        h1 ScalpelJS
+        .subtitle UI microframework for software surgeons
+
+      #content
+        block content
+      #footer
+        span 2013&nbsp;&copy;&nbsp;
+        a(href="http://scalpeljs.github.io") ScalpelJS
+    include shared/ga

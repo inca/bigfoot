@@ -1,0 +1,167 @@
+html, body, form, img, fieldset {
+  padding:0;
+  margin:0;
+  border:0;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.5em;
+  font-family: "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  background: #f5f5f5 url(../img/noise.png) repeat;
+  color:#444;
+}
+
+a, a:hover, a:visited {
+  color:#886;
+}
+
+p, h1, h2, h3, h4, h5, h6, ul, ol {
+  margin: 1em 0;
+}
+
+li, dd, dt {
+  margin: .5em 0;
+}
+
+h1 {
+  font-size:32px;
+  font-weight:normal;
+  font-style:normal;
+  margin:.5em 0;
+}
+
+h2 {
+  font-size:24px;
+  font-weight:bold;
+  margin-top:2.5em;
+  border-bottom:1px solid #ddd;
+  padding-bottom:4px;
+  box-shadow:0 1px 0 #fff;
+}
+
+h3, dt {
+  font-size: 20px;
+  color:#3399cc;
+}
+
+dd {
+  margin-left:32px;
+  border-left: 4px solid #ddd;
+  padding: 8px 16px;
+}
+
+pre, code {
+  border-radius: 4px;
+  background: rgba(0,0,0,.4) url(../img/noise.png) repeat;
+  box-shadow: 0 1px 3px rgba(0,0,0,.6) inset,
+  0 1px 16px rgba(0,0,0,.4) inset,
+  0 1px 1px #fff;
+  padding:2px 6px;
+  color:#fff;
+  text-shadow: 0 1px 1px #000;
+}
+
+pre {
+  padding:8px 16px;
+}
+
+pre code {
+  padding:0;
+  background: none;
+  box-shadow: none;
+}
+
+.flame {
+  color:#777;
+  font-style: italic;
+}
+
+#header {
+  background:#222;
+  overflow:hidden;
+  color:#fff;
+}
+
+#header .subtitle {
+  color:#ccc;
+  font-style: italic;
+  margin:-8px 0 4px;
+}
+
+#header, #content, #footer {
+  padding-left:16px;
+  padding-right:16px;
+}
+
+#footer {
+  margin:16px 0;
+  padding-top:16px;
+  border-top:1px solid #ddd;
+  box-shadow:0 1px 0 #fff inset;
+}
+
+#footer a {
+  text-decoration: none;
+}
+
+@media screen and (min-width:961px) {
+
+  #header, #content, #footer {
+    padding-left:64px;
+    padding-right:64px;
+  }
+
+}
+
+/* Notices */
+
+#notices {
+  position:fixed;
+  z-index:2000;
+  bottom:0;
+  right:0;
+  width:40%;
+}
+
+#notices .notice {
+  position:relative;
+  overflow:hidden;
+  color:#fff;
+  background:rgba(0,0,0,.8);
+  background-repeat: no-repeat;
+  background-position: 4px center;
+  border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.6);
+  border-radius:6px;
+  padding:12px;
+  padding-left:48px;
+  margin:8px 12px;
+  min-height:32px;
+}
+
+#notices .notice.error { background-image: url(../img/delete.png) }
+#notices .notice.warn { background-image: url(../img/warning.png) }
+#notices .notice.info { background-image: url(../img/accept.png) }
+#notices .notice > .hide {
+  display:block;
+  position:absolute;
+  top:-2px;
+  right:-2px;
+  width:24px;
+  height:24px;
+  background:url(../img/close.png) center center no-repeat;
+  cursor:pointer;
+  opacity:0;
+}
+
+#notices .notice:hover > .hide {
+  opacity:1;
+}
+
+@media screen and (max-width:480px) {
+  #notices {
+    position:relative;
+    width:100%;
+  }
+}
