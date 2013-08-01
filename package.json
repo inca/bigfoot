@@ -1,0 +1,23 @@
+{
+  "name": "scalpeljs",
+  "version": "0.2.0",
+  "description": "UI microframework based off jQuery",
+  "main": "scalpel.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inca/scalpeljs"
+  },
+  "author": "Boris Okunskiy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/inca/scalpeljs/issues"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "grunt": "*",
+    "grunt-browserify": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jade": "*"
+  }
+}
