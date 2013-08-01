@@ -2,12 +2,22 @@
   "name": "scalpeljs",
   "version": "0.2.0",
   "description": "UI microframework based off jQuery",
-  "main": "scalpel.js",
+  "main": "lib/scalpel.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/inca/scalpeljs"
   },
   "author": "Boris Okunskiy",
+  "contributors": [
+    {
+      "name": "Valery Aligorsky",
+      "email": "stdammit@gmail.com"
+    },
+    {
+      "name": "Andrey Semenov",
+      "email": "semenow.andrew@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/inca/scalpeljs/issues"
