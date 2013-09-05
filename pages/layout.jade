@@ -12,7 +12,10 @@ html
     #notices
     #outer
       #header
-        h1 ScalpelJS
+        h1
+          span ScalpelJS
+          a.download(href='/build/scalpel-#{pkg.version}.min.js',
+          target='_blank')= pkg.version
         .subtitle UI microframework for software surgeons
 
       #content

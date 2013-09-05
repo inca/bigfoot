@@ -1,0 +1,25 @@
+## About this project
+
+ScalpelJS is a tiny UI library which features various commonly used web application components:
+
+  * drop down menus;
+  * context highlighting;
+  * notices;
+  * partial viewports and forms;
+  * switchers, toggles, etc.
+
+Scalpel has a selectors queue at its core, which allows us to avoid complex event coordination and orchestration, especially when lots of partial markup is loaded on demand.
+
+ScalpelJS aims to be fully markup-driven (declarative): all configuration is done via `data-` attributes and classes.
+
+This library is an internal project of [EduArea LLC](http://eduarea.com).
+
+## Team
+
+Huge thanks to our totally awesome contributors:
+
+* [Boris Okunskiy](https://github.com/inca)
+
+* [Valery Aligorsky](https://github.com/RyuuGan)
+
+* [Andrey Semenov](https://github.com/andrei15)

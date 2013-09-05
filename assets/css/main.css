@@ -89,7 +89,14 @@ pre code {
   margin:-8px 0 4px;
 }
 
+#header .download {
+  display:inline-block;
+  font-size:18px;
+  margin:0 8px;
+}
+
 #header, #content, #footer {
+  position:relative;
   padding-left:16px;
   padding-right:16px;
 }
