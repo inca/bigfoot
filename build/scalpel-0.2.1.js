@@ -1,5 +1,5 @@
-;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
-(function(){'use strict';
+;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
 module.exports = (function($) {
 
@@ -41,7 +41,6 @@ module.exports = (function($) {
   };
 
 })(jQuery);
-})()
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -720,7 +719,7 @@ module.exports = (function($) {
 // Standard jQuery extensions
 // ========
 
-// Find inside element or match itself
+  // Find inside element or match itself
 
   $.fn.lookup = function(selector) {
     var elems = this.find(selector);
@@ -729,7 +728,7 @@ module.exports = (function($) {
     else return elems;
   };
 
-// Insert at index function
+  // Insert at index function
 
   $.fn.insertAt = function(index, element) {
     var lastIndex = this.children().size();
@@ -743,7 +742,7 @@ module.exports = (function($) {
     return this;
   };
 
-// Insert-at-caret
+  // Insert-at-caret
 
   $.fn.insertAtCaret = function(value) {
     return this.each(function() {
@@ -769,7 +768,7 @@ module.exports = (function($) {
     })
   };
 
-// Scroll to element
+  // Scroll to element
 
   $.fn.scrollTo = function() {
 
@@ -783,6 +782,31 @@ module.exports = (function($) {
       $("html, body").animate({
         "scrollTop": scrollTop
       }, 200);
+  };
+
+  // Shuffle elements
+
+  $.fn.shuffle = function() {
+
+    function rnd(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    var all = this.get();
+
+    var shuffled = $.map(all, function() {
+        var random = rnd(all.length),
+          randEl = $(all[random]).clone(true)[0];
+        all.splice(random, 1);
+        return randEl;
+      });
+
+    this.each(function(i){
+      $(this).replaceWith($(shuffled[i]));
+    });
+
+    return $(shuffled);
+
   };
 
 })(jQuery);
@@ -949,7 +973,7 @@ module.exports = {
 };
 
 },{}],15:[function(require,module,exports){
-(function(){'use strict';
+'use strict';
 
 module.exports = (function($) {
 
@@ -1113,6 +1137,5 @@ module.exports = (function($) {
   };
 
 })(jQuery);
-})()
 },{}]},{},[2])
 ;
