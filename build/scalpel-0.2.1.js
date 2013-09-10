@@ -155,6 +155,10 @@ module.exports = (function($) {
       });
   };
 
+  $.scalpel.queue['.shuffle > *'] = function() {
+    $(this).shuffle();
+  };
+
 })(jQuery);
 },{}],5:[function(require,module,exports){
 'use strict';
