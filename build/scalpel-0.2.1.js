@@ -204,6 +204,7 @@ module.exports = (function($) {
     var stay = form.hasClass("stay");
     var action = form.attr("action");
     var method = form.attr("method").toUpperCase();
+    var multipart = form.attr('enctype') == 'multipart/form-data';
 
     form[0].submit = function() {
       if (form.hasClass("readonly")) return;
@@ -215,29 +216,34 @@ module.exports = (function($) {
       ph.insertAfter(submits);
       ph.height(h);
       // Prepare params
-      var params = $(":not(.exclude)", form).serializeArray();
-      params.push({
-        name: "__",
-        value: new Date().getTime().toString()
-      });
-      // Execute handlers
-      if (!form[0].executeHandlers(params)) { // Submit prevented
-        submits.show();
-        ph.remove();
-        return;
+      var params = form[0];
+      if (multipart)
+        $.scalpel.log(method + " " + action + " [multipart data]");
+      else {
+        params = $(":not(.exclude)", form).serializeArray();
+        params.push({
+          name: "__",
+          value: new Date().getTime().toString()
+        });
+        // Execute handlers
+        if (!form[0].executeHandlers(params)) { // Submit prevented
+          submits.show();
+          ph.remove();
+          return;
+        }
+        $.scalpel.log(method + " " + action + " " + JSON.stringify(params));
       }
       // Now do AJAX
-      $.scalpel.log(method + " " + action + " " + JSON.stringify(params));
       if (method == "GET") {
         var url = action + "?" + $.param(params);
         $.scalpel.viewport.navigate(url);
       } else {
-        // Perform ajax submit
-        $.ajax({
+        var settings = {
           data: params,
           dataType: "json",
           url: action,
           type: method,
+          cache: false,
           success: function(data) {
             form.trigger("postSubmit", data);
             $.scalpel.ajax.processResponse(data, stay);
@@ -250,7 +256,13 @@ module.exports = (function($) {
             ph.remove();
             $.scalpel.ajax.processErrors(xhr);
           }
-        });
+        };
+        if (multipart) {
+          settings.processData = false;
+          settings.contentType = false;
+        }
+        // Perform ajax submit
+        $.ajax(settings);
       }
     };
 
