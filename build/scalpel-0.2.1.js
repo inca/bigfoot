@@ -557,6 +557,7 @@ module.exports = (function($) {
 
     var target = $(switcher.attr("data-switch"));
     target.addClass("switch-target");
+    var url = target.attr('data-url');
 
     if (switcher.hasClass("switch-stay"))
       target.click(function(ev) {
@@ -564,9 +565,31 @@ module.exports = (function($) {
       });
 
     function update() {
-      if (target.is(":visible"))
+      if (target.is(":visible")) {
         switcher.addClass(cssClass);
-      else switcher.removeClass(cssClass);
+        if (url) { // If data-url attr exists, load remote content into target
+          target.empty();
+          // Insert placeholder into container
+          var ph = $.scalpel.placeholder();
+          target.append(ph);
+          // Do AJAX
+          $.scalpel.log("[dropdown] GET " + url);
+          $.ajax({
+            dataType: "html",
+            url: url,
+            type: 'get',
+            success: function(data) {
+              ph.remove();
+              target.append(data);
+              $.scalpel.init(target);
+            },
+            error: function(xhr) {
+              ph.remove();
+              $.scalpel.ajax.processErrors(xhr);
+            }
+          });
+        }
+      } else switcher.removeClass(cssClass);
     }
 
     update();
