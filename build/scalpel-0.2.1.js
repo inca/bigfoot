@@ -400,8 +400,20 @@ module.exports = (function($) {
 
   $.scalpel.queue['img.retina'] = function() {
     var img = $(this);
-    if ($.scalpel.isRetina())
+
+    if ($.scalpel.isRetina()) {
+      if (img[0].complete) swap();
+      else img.one('load.scalpel.retina', swap);
+    }
+
+    function swap() {
+      var width = img.width();
+      var height = img.height();
       img.attr('src', img.attr('src').replace(/\.(\w+)$/, '@2X.$1'));
+      img.attr('width', width);
+      img.attr('height', height);
+    }
+
   };
 
 })(jQuery);
