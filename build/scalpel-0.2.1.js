@@ -401,6 +401,7 @@ module.exports = (function($) {
     a.click(function(ev){
       var ph = $.scalpel.placeholder();
       ev.preventDefault();
+      var scrollTop = $(window).scrollTop();
       container.empty().append(ph);
       $.ajax({
         dataType: "html",
@@ -414,7 +415,9 @@ module.exports = (function($) {
           content.attr("class", classes);
           content.attr("style", styles);
           content.append(data);
+          // fallback to the previous position
           ph.replaceWith(content).remove();
+          $(window).scrollTop(scrollTop);
           $.scalpel.init(content);
         },
         error: function() {
