@@ -474,6 +474,7 @@ module.exports = (function($) {
     var block = $(this);
     var scrollContainer = $(block.attr('data-scroll-container') || window);
     var url = block.attr("data-load");
+    var hash = $.sha256(url);
 
     function loadInViewport() {
       if (!block) return;
@@ -508,8 +509,8 @@ module.exports = (function($) {
     }
 
     scrollContainer
-      .unbind('.scalpel.scrollLoad')
-      .bind("scroll.scalpel.scrollLoad", loadInViewport);
+      .unbind("." + hash + '.scalpel.scrollLoad')
+      .bind("scroll." + hash + ".scalpel.scrollLoad", loadInViewport);
 
     $(loadInViewport); // Bind on jQuery ready
   };
