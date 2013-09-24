@@ -415,7 +415,6 @@ module.exports = (function($) {
           content.attr("style", styles);
           content.append(data);
           ph.replaceWith(content).remove();
-          content.scrollTo();
           $.scalpel.init(content);
         },
         error: function() {
