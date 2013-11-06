@@ -84,6 +84,8 @@ module.exports = (function($) {
     function restore() {
       if (localStorage.getItem(key) == 'false')
         input.removeAttr('checked');
+      else if (localStorage.getItem(key) == 'true')
+        input.attr('checked', 'checked');
       update(0);
     }
 
@@ -144,15 +146,19 @@ module.exports = (function($) {
   };
 
   $.scalpel.queue['[data-show]'] = function() {
-    $(this).unbind(".scalpel.show")
-      .bind("click.scalpel.show", function () {
-        $($(this).attr("data-show")).show();
+    var elem = $(this);
+    elem.unbind(".scalpel.show")
+      .bind("click.scalpel.show", function() {
+        $(elem.attr("data-show")).show(0, function() {
+          // Special case if combined with data-set-focus
+          $(elem.attr("data-set-focus")).focus();
+        });
       });
   };
 
   $.scalpel.queue['[data-hide]'] = function() {
     $(this).unbind(".scalpel.hide")
-      .bind("click.scalpel.hide", function () {
+      .bind("click.scalpel.hide", function() {
         $($(this).attr("data-hide")).hide();
       });
   };
@@ -218,7 +224,7 @@ module.exports = (function($) {
       ph.insertAfter(submits);
       ph.height(h);
       // Prepare params
-      var params = form[0];
+      var params = new FormData(form[0]);
       if (multipart)
         $.scalpel.log(method + " " + action + " [multipart data]");
       else {
