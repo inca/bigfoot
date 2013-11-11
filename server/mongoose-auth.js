@@ -7,7 +7,7 @@ module.exports = function(options) {
   var User = options.auth && options.auth.model;
 
   if (!User) {
-    console.error('Please configure `options.auth.model` to your mongoose User model.');
+    console.error('Configure `options.auth.model` to your mongoose User model.');
   }
 
   return function(req, res, next) {

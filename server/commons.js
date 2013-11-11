@@ -5,7 +5,7 @@ var moment = require('moment')
   , _ = require('underscore')
   , debug = require('debug')('scalpel:commons');
 
-module.exports = function() {
+module.exports = function(options) {
 
   return function(req, res, next) {
 

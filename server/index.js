@@ -2,6 +2,8 @@
 
 var Application = require('./application')
   , express = require('express')
+  , stylus = require('stylus')
+  , nib = require('nib')
   , multipart = require('./multipart')
   , notices = require('./notices')
   , commons = require('./commons')
@@ -76,6 +78,33 @@ module.exports = function(options) {
   // Router
 
   app.install('router', app.router);
+
+  // Stylus
+  var publicPath = options.publicPath;
+  if (!publicPath)
+    console.error('Please set up `option.publicPath`.');
+  app.install('stylus', stylus.middleware({
+    src: publicPath,
+    compile: function(str, path) {
+      return stylus(str)
+        .set('filename', path)
+        .set('compress', true)
+        .use(nib());
+    }
+  }));
+
+  // Error handler
+
+  app.configure('development', function() {
+    app.install('errors', express.errorHandler({
+      dumpExceptions: true,
+      showStack: true
+    }));
+  });
+
+  app.configure('production', function() {
+    app.install('errors', express.errorHandler());
+  });
 
   return app;
 
