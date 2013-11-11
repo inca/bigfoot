@@ -18,14 +18,14 @@ module.exports = function() {
       return typeof(value) == 'string' ? value : defaultValue;
     };
 
-    req.getStrings = function(name) {
+    req.getStrings = function(name, defaultValue) {
       var value = req.getParam(name);
       if (typeof(value) == 'string') return [value];
       if (Array.isArray(value))
         return value.filter(function(v) {
           return typeof(v) == 'string';
         });
-      return [];
+      return defaultValue || [];
     };
 
     req.getInt = function(name, defaultValue) {
@@ -33,7 +33,7 @@ module.exports = function() {
       return isNaN(value) ? defaultValue : value;
     };
 
-    req.getInts = function(name) {
+    req.getInts = function(name, defaultValue) {
       var value = req.getParam(name);
       var num = parseInt(value);
       if (!isNaN(num)) return [num];
@@ -42,7 +42,7 @@ module.exports = function() {
           var num = parseInt(v);
           return isNaN(num) ? null : num;
         });
-      return [];
+      return defaultValue || [];
     };
 
     req.getFloat = function(name, defaultValue) {
@@ -50,7 +50,7 @@ module.exports = function() {
       return isNaN(value) ? defaultValue : value;
     };
 
-    req.getFloats = function(name) {
+    req.getFloats = function(name, defaultValue) {
       var value = req.getParam(name);
       var num = parseFloat(value);
       if (!isNaN(num)) return [num];
@@ -59,7 +59,7 @@ module.exports = function() {
           var num = parseFloat(v);
           return isNaN(num) ? null : num;
         });
-      return [];
+      return defaultValue || [];
     };
 
     req.getMoment = function(name, defaultValue) {
@@ -67,7 +67,7 @@ module.exports = function() {
       return d.isValid() ? d : moment(defaultValue);
     };
 
-    req.getMoments = function(name) {
+    req.getMoments = function(name, defaultValue) {
       var value = req.getParam(name);
       var mom = moment(value);
       if (mom.isValid()) return [mom];
@@ -76,7 +76,7 @@ module.exports = function() {
           var mom = moment(v);
           return mom.isValid() ? mom : null;
         });
-      return [];
+      return defaultValue || [];
     };
 
     req.getFile = function(name) {
