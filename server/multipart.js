@@ -1,6 +1,7 @@
 'use strict';
 
-var multiparty = require('multiparty');
+var multiparty = require('multiparty')
+  , debug = require('debug')('scalpel:multipart');
 
 function flatObject(obj) {
   var result = {};
@@ -30,6 +31,7 @@ module.exports = function() {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
       if (err) return next(err);
+      debug("Parsed form.");
       req._body = true;
       req.files = files;
       // Field arrays are flattened

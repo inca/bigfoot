@@ -1,37 +1,96 @@
 'use strict';
 
-var express = require('express');
+var Application = require('./application')
+  , express = require('express')
+  , multipart = require('./multipart')
+  , notices = require('./notices')
+  , commons = require('./commons')
+  , mongooseAuth = require('./mongoose-auth')
+  , _ = require('underscore')
+  , i18n = require("i18n-2");
+
+// Default application skeleton
+
+module.exports = function(options) {
+
+  options = options || {};
+
+  var app = new Application(options);
+
+  // Views
+
+  app.set('views', options.viewsPath || './views');
+  app.set('view engine', 'jade');
+  app.engine('ejs', require('ejs').renderFile);
+  app.locals.basedir = options.viewsPath || './views';
+
+  // Loggers
+
+  app.configure('development', function() {
+    app.install('logger', express.logger('dev'));
+  });
+
+  // Parsers
+
+  app.install('urlencoded', express.urlencoded());
+  app.install('json', express.json());
+  app.install('multipart', multipart());
+
+  // Session with connect-redis
+  var secret = (options.session && options.session.secret) || '';
+  var RedisStore = require('connect-redis')(express);
+  var redisOptions = _.extend({}, options.redis || {}, {
+    prefix: 'session:',
+    ttl: (options.session && options.session.ttl) || 600
+  });
+  app.install('cookie', express.cookieParser(secret));
+  app.install('session', express.session({
+    key: 'sid',
+    secret: secret,
+    store: new RedisStore(redisOptions)
+  }));
+
+  // Session-based authentication backed by Mongoose
+
+  app.install('auth', mongooseAuth(options));
+
+  // I18n
+
+  app.install('i18n', function(req, res, next) {
+    req.i18n = new i18n({
+      locales: options.locales || ['en'],
+      extension: '.json'
+    });
+    i18n.registerMethods(res.locals, req);
+    next();
+  });
+
+  // Notices
+
+  app.install('notices', notices(options));
+
+  // Routing commons
+
+  app.install('commons', commons());
+
+  // Router
+
+  app.install('router', app.router);
+
+  return app;
+
+};
 
 // Common middleware
 
-exports.multipart = require('./multipart');
+exports.Application = Application;
 
-exports.notices = require('./notices');
+exports.multipart = multipart;
 
-exports.params = require('./params');
+exports.notices = notices;
 
-// Combinations
+exports.commons = commons;
 
-exports.parsers = function(options) {
-  var methodOverride = express.methodOverride(options)
-    , urlencoded = express.urlencoded(options)
-    , json = express.json(options)
-    , multipart = exports.multipart(options);
+exports.mongooseAuth = mongooseAuth;
 
-  return function(req, res, next) {
-    methodOverride(req, res, function(err) {
-      if (err) return next(err);
-      urlencoded(req, res, function(err) {
-        if (err) return next(err);
-        json(req, res, function(err) {
-          if (err) return next(err);
-          multipart(req, res, function(err) {
-            if (err) return next(err);
-            exports.params(options)(req, res, next);
-          });
-        });
-      });
-    });
-  };
 
-};

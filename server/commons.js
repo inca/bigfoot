@@ -1,11 +1,17 @@
 'use strict';
 
 var moment = require('moment')
-  , flatMap = require('flatmap');
+  , flatMap = require('flatmap')
+  , _ = require('underscore')
+  , debug = require('debug')('scalpel:commons');
 
 module.exports = function() {
 
   return function(req, res, next) {
+
+    debug('Extending req, res with commons.');
+
+    // Params coercion
 
     req.getParam = function(name, defaultValue) {
       var body = req.body || {};
@@ -96,8 +102,21 @@ module.exports = function() {
       return Array.isArray(value) ? value : [value];
     };
 
+    // Some useful response locals
+
+    _.extend(res.locals, {
+      _: _,
+      xhr: req.xhr,
+      moment: function() {
+        return moment.apply(arguments).lang(req.i18n.getLocale());
+      },
+      duration: function() {
+        return moment.duration.apply(arguments).lang(req.i18n.getLocale());
+      }
+    });
+
     next();
 
-  }
+  };
 
 };

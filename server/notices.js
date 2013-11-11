@@ -1,6 +1,7 @@
 'use strict';
 
-var vsprintf = require("sprintf").vsprintf;
+var vsprintf = require("sprintf").vsprintf
+  , _ = require('underscore');
 
 module.exports = function(options) {
 
@@ -62,10 +63,7 @@ module.exports = function(options) {
 
     // Allow extending through options
 
-    for (var i in options) {
-      if (options.hasOwnProperty(i))
-        res.notices[i] = options[i];
-    }
+    _.extend(notices, options.notices || {});
 
     next();
   }

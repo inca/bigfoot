@@ -30,7 +30,12 @@
     "stylus": "*",
     "nib": "*",
     "bundle-up": "*",
-    "sprintf": "*"
+    "sprintf": "*",
+    "connect-redis": "*",
+    "underscore": "*",
+    "ejs": "*",
+    "i18n-2": "*",
+    "debug": "*"
   },
   "devDependencies": {
     "mocha": "*",
