@@ -9,15 +9,49 @@ var Application = require('./application')
   , commons = require('./commons')
   , mongooseAuth = require('./mongoose-auth')
   , _ = require('underscore')
-  , i18n = require("i18n-2");
+  , i18n = require("i18n-2")
+  , BundleUp = require("bundle-up");
 
 // Default application skeleton
 
 module.exports = function(options) {
 
+  var app = new Application();
+
   options = options || {};
 
-  var app = new Application(options);
+  // Main configurables
+
+  if (!options.port) {
+    console.log('Specify `options.port` (default is 50777)');
+    options.port = 50777;
+  }
+
+  if (!options.schema) {
+    console.log('Specify `options.schema` for production (default is http)');
+    options.schema = 'http';
+  }
+
+  if (!options.domain) {
+    console.log('Specify `options.domain` for production');
+    options.domain = 'localhost:' + options.port;
+  }
+
+  options.origin = options.schema + '://' + options.domain;
+  console.log('Application origin is ' + options.origin);
+
+  if (!options.cdnDomain) {
+    console.log('Specify `options.cdnDomain` for static (default is ' +
+      options.domain + ")");
+    options.cdnDomain = options.domain;
+  }
+
+  options.cdnOrigin = options.schema + '://' + options.cdnDomain;
+
+  if (!options.assetsPath) {
+    console.log('Specify `options.assetsPath` for Bundle Up.');
+    options.assetsPath = './assets'
+  }
 
   // Views
 
@@ -73,18 +107,16 @@ module.exports = function(options) {
 
   // Routing commons
 
-  app.install('commons', commons());
+  app.install('commons', commons(options));
 
   // Router
 
   app.install('router', app.router);
 
   // Stylus
-  var publicPath = options.publicPath;
-  if (!publicPath)
-    console.error('Please set up `option.publicPath`.');
+
   app.install('stylus', stylus.middleware({
-    src: publicPath,
+    src: options.publicPath || './public',
     compile: function(str, path) {
       return stylus(str)
         .set('filename', path)
@@ -92,6 +124,39 @@ module.exports = function(options) {
         .use(nib());
     }
   }));
+
+  // Assets bundle
+
+  app.configure('development', function() {
+    BundleUp(app, options.assetsPath, {
+      staticRoot: options.publicPath,
+      staticUrlRoot: options.cdnOrigin,
+      bundle: false,
+      minifyCss: false,
+      minifyJs: false
+    });
+  });
+
+  app.configure('production', function() {
+    BundleUp(app, options.assetsPath, {
+      staticRoot: options.publicPath,
+      staticUrlRoot: options.cdnOrigin,
+      bundle: true,
+      minifyCss: true,
+      minifyJs: true
+    });
+  });
+
+  // Public serving
+
+  app.install('public-cors', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', options.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+  });
+
+  app.install('public', express.static(options.publicPath));
 
   // Error handler
 

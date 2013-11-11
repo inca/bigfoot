@@ -2,6 +2,8 @@
 
 var moment = require('moment')
   , flatMap = require('flatmap')
+  , fs = require('fs')
+  , path = require('path')
   , _ = require('underscore')
   , debug = require('debug')('scalpel:commons');
 
@@ -105,14 +107,29 @@ module.exports = function(options) {
     // Some useful response locals
 
     _.extend(res.locals, {
+
       _: _,
+
       xhr: req.xhr,
+
       moment: function() {
         return moment.apply(arguments).lang(req.i18n.getLocale());
       },
+
       duration: function() {
         return moment.duration.apply(arguments).lang(req.i18n.getLocale());
+      },
+
+      cdn: function(resource) {
+        var uri = options.cdnOrigin + resource;
+        var file = path.join(options.publicPath, resource);
+        try {
+          return uri + "?" + fs.statSync(file).mtime.getTime();
+        } catch (e) {
+          return uri;
+        }
       }
+
     });
 
     next();
