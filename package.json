@@ -1,7 +1,7 @@
 {
   "name": "scalpeljs",
-  "version": "0.2.2",
-  "description": "UI microframework based off jQuery",
+  "version": "0.3.0",
+  "description": "Express-based App Framework",
   "repository": {
     "type": "git",
     "url": "https://github.com/inca/scalpeljs"
@@ -20,6 +20,12 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/inca/scalpeljs/issues"
+  },
+  "dependencies": {
+    "express": "*",
+    "moment": "*",
+    "multiparty": "*",
+    "flatmap": "*"
   },
   "devDependencies": {
     "mocha": "*",
