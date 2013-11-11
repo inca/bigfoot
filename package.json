@@ -1,7 +1,8 @@
 {
-  "name": "scalpeljs",
+  "name": "scalpel",
   "version": "0.3.0",
   "description": "Express-based App Framework",
+  "main": "server/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/inca/scalpeljs"
@@ -25,7 +26,11 @@
     "express": "*",
     "moment": "*",
     "multiparty": "*",
-    "flatmap": "*"
+    "flatmap": "*",
+    "stylus": "*",
+    "nib": "*",
+    "bundle-up": "*",
+    "sprintf": "*"
   },
   "devDependencies": {
     "mocha": "*",

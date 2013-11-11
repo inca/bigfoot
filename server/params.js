@@ -3,99 +3,101 @@
 var moment = require('moment')
   , flatMap = require('flatmap');
 
-module.exports = function(req, res, next) {
+module.exports = function() {
 
-  req.getParam = function(name, defaultValue) {
-    var params = req.params || {};
-    var body = req.body || {};
-    var query = req.query || {};
-    return (params.hasOwnProperty(name) && params[name]) ||
-      body[name] || query[name] || defaultValue;
-  };
+  return function(req, res, next) {
 
-  req.getString = function(name, defaultValue) {
-    var value = req.getParam(name);
-    return typeof(value) == 'string' ? value : defaultValue;
-  };
+    req.getParam = function(name, defaultValue) {
+      var body = req.body || {};
+      var query = req.query || {};
+      return body[name] || query[name] || defaultValue;
+    };
 
-  req.getStrings = function(name) {
-    var value = req.getParam(name);
-    if (typeof(value) == 'string') return [value];
-    if (Array.isArray(value))
-      return value.filter(function(v) {
-        return typeof(v) == 'string';
-      });
-    return [];
-  };
+    req.getString = function(name, defaultValue) {
+      var value = req.getParam(name);
+      return typeof(value) == 'string' ? value : defaultValue;
+    };
 
-  req.getInt = function(name, defaultValue) {
-    var value = parseInt(req.getParam(name));
-    return isNaN(value) ? defaultValue : value;
-  };
+    req.getStrings = function(name) {
+      var value = req.getParam(name);
+      if (typeof(value) == 'string') return [value];
+      if (Array.isArray(value))
+        return value.filter(function(v) {
+          return typeof(v) == 'string';
+        });
+      return [];
+    };
 
-  req.getInts = function(name) {
-    var value = req.getParam(name);
-    var num = parseInt(value);
-    if (!isNaN(num)) return [num];
-    if (Array.isArray(value))
-      return flatMap(value, function(v) {
-        var num = parseInt(v);
-        return isNaN(num) ? null : num;
-      });
-    return [];
-  };
+    req.getInt = function(name, defaultValue) {
+      var value = parseInt(req.getParam(name));
+      return isNaN(value) ? defaultValue : value;
+    };
 
-  req.getFloat = function(name, defaultValue) {
-    var value = parseFloat(req.getParam(name));
-    return isNaN(value) ? defaultValue : value;
-  };
+    req.getInts = function(name) {
+      var value = req.getParam(name);
+      var num = parseInt(value);
+      if (!isNaN(num)) return [num];
+      if (Array.isArray(value))
+        return flatMap(value, function(v) {
+          var num = parseInt(v);
+          return isNaN(num) ? null : num;
+        });
+      return [];
+    };
 
-  req.getFloats = function(name) {
-    var value = req.getParam(name);
-    var num = parseFloat(value);
-    if (!isNaN(num)) return [num];
-    if (Array.isArray(value))
-      return flatMap(value, function(v) {
-        var num = parseFloat(v);
-        return isNaN(num) ? null : num;
-      });
-    return [];
-  };
+    req.getFloat = function(name, defaultValue) {
+      var value = parseFloat(req.getParam(name));
+      return isNaN(value) ? defaultValue : value;
+    };
 
-  req.getMoment = function(name, defaultValue) {
-    var d = moment(req.getString(name), 'YYYY-MM-DD');
-    return d.isValid() ? d : moment(defaultValue);
-  };
+    req.getFloats = function(name) {
+      var value = req.getParam(name);
+      var num = parseFloat(value);
+      if (!isNaN(num)) return [num];
+      if (Array.isArray(value))
+        return flatMap(value, function(v) {
+          var num = parseFloat(v);
+          return isNaN(num) ? null : num;
+        });
+      return [];
+    };
 
-  req.getMoments = function(name) {
-    var value = req.getParam(name);
-    var mom = moment(value);
-    if (mom.isValid()) return [mom];
-    if (Array.isArray(value))
-      return flatMap(value, function(v) {
-        var mom = moment(v);
-        return mom.isValid() ? mom : null;
-      });
-    return [];
-  };
+    req.getMoment = function(name, defaultValue) {
+      var d = moment(req.getString(name), 'YYYY-MM-DD');
+      return d.isValid() ? d : moment(defaultValue);
+    };
 
-  req.getFile = function(name) {
-    var files = req.files || {};
-    var file = files[name];
-    return file && file[0];
-  };
+    req.getMoments = function(name) {
+      var value = req.getParam(name);
+      var mom = moment(value);
+      if (mom.isValid()) return [mom];
+      if (Array.isArray(value))
+        return flatMap(value, function(v) {
+          var mom = moment(v);
+          return mom.isValid() ? mom : null;
+        });
+      return [];
+    };
 
-  req.getFiles = function(name) {
-    var files = req.files || {};
-    return files[name] || [];
-  };
+    req.getFile = function(name) {
+      var files = req.files || {};
+      var file = files[name];
+      return file && file[0];
+    };
 
-  req.getArray = function(name, defaultValue) {
-    var value = req.getParam(name, defaultValue);
-    if (!value) return [];
-    return Array.isArray(value) ? value : [value];
-  };
+    req.getFiles = function(name) {
+      var files = req.files || {};
+      return files[name] || [];
+    };
 
-  next();
+    req.getArray = function(name, defaultValue) {
+      var value = req.getParam(name, defaultValue);
+      if (!value) return [];
+      return Array.isArray(value) ? value : [value];
+    };
+
+    next();
+
+  }
 
 };
