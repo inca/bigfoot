@@ -38,7 +38,6 @@ module.exports = function(options) {
   }
 
   options.origin = options.schema + '://' + options.domain;
-  console.log('Application origin is ' + options.origin);
 
   if (!options.cdnDomain) {
     console.log('Specify `options.cdnDomain` for static (default is ' +
