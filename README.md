@@ -1,4 +1,4 @@
-# ScalpelJS — micro UI framework
+# Bigboot — Client-server Application Framework
 
 This is the internal project of EduArea LLC.
 

@@ -1,69 +1,68 @@
 'use strict';
 
-module.exports = (function($) {
+$.bigfoot.msg['standby'] = "Please wait...";
 
-  $.msg['standby'] = "Please wait...";
+var useHistory = typeof(history.pushState) == "function";
 
-  var useHistory = typeof(history.pushState) == "function";
+// Binding global onpopstate event on load
+if (useHistory) {
+  $(function() {
+    window.addEventListener("popstate", function(ev) {
+      if (!ev.state) return;
+      // `viewportId` from `state` must match #viewport(data-viewport-id)
+      var viewportId = ev.state.id;
+      if (viewportId && viewportId == id()) {
+        load(location.href);
+      } else {
+        // reload whole page
+        location.reload(true);
+      }
+    }, false);
+  });
+}
 
-  // Binding global onpopstate event on load
-  if (useHistory) {
-    $(function() {
-      window.addEventListener("popstate", function(ev) {
-        if (!ev.state) return;
-        // `viewportId` from `state` must match #viewport(data-viewport-id)
-        var viewportId = ev.state.id;
-        if (viewportId && viewportId == id()) {
-          load(location.href);
-        } else {
-          // reload whole page
-          location.reload(true);
-        }
-      }, false);
-    });
-  }
+$.bigfoot.viewport = {
 
-  function timeout() {
-    var t = $.scalpel.settings['viewport.timeout'];
-    return t ? parseInt(t) : 500;
-  }
-
-  function container() {
-    var selector = $.scalpel.settings['viewport.container'];
-    return selector ? $(selector) : $("#viewport");
-  }
-
-  function id() {
-    var cnt = container();
+  id: function() {
+    var cnt = this.container();
     var id = cnt.attr("data-viewport-id");
     if (id) return id;
     // Generate random id
     var rnd = Math.random().toString();
     cnt.attr("data-viewport-id", rnd);
     return rnd;
-  }
+  },
 
-  function overlay() {
+  container: function() {
+    return $("#viewport");
+  },
+
+  timeout: function() {
+    var settings = $.bigfoot.settings.viewport || {};
+    return settings.timeout || 500;
+  },
+
+  overlay: function() {
     var overlay = $('<div id="viewport-standby"></div>');
     overlay.hide();
-    overlay.append('<div class="message">' + $.msg['standby'] + '</div>');
+    overlay.append('<div class="message">' + $.bigfoot.msg['standby'] + '</div>');
     return overlay;
-  }
+  },
 
-  // Loads HTML content from specified location and
-  // inserts it into the container (`#viewport` by default).
-  function load(href) {
+  // Loads `href` partially into the `#viewport` container
+  load: function(href) {
+    var viewport = this;
     // Trigger viewport unload
     var e = $.Event("viewportUnload");
     $(window).trigger(e);
     if (e.isDefaultPrevented()) return;
     // Adding "Please wait" overlay, hidden initially
-    var o = overlay();
+    var o = viewport.overlay();
     $("body").append(o);
     // When timeout comes, show the overlay
     var i = setTimeout(function() {
       o.fadeIn(300);
-    }, timeout());
+    }, viewport.timeout());
     // Perform AJAX request
     $.ajax({
       url: href,
@@ -74,7 +73,7 @@ module.exports = (function($) {
       },
       type: "GET",
       success: function(data) {
-        var viewportId = id();
+        var viewportId = viewport.id();
         var cnt = $(data);
         // Wrap cnt into <div id="viewport">, if necessary
         if (cnt.attr("id") != "viewport")
@@ -85,11 +84,11 @@ module.exports = (function($) {
         o.remove();
         clearTimeout(i);
         // Insert the data
-        container().replaceWith(cnt).remove();
+        viewport.container().replaceWith(cnt).remove();
         // Clear `active` class from all partial links
         $("a[rel='partial']").removeClass("active");
         // Initialize the container
-        $.scalpel.init(cnt);
+        $.bigfoot.init(cnt);
         // See if site title needs to be replaced
         var newTitle = cnt.attr("data-title");
         if (newTitle) {
@@ -98,19 +97,19 @@ module.exports = (function($) {
         // Raise the event
         $("body").trigger("viewportLoad");
         // Navigate to #anchor
-        scrollToAnchor();
+        viewport.scrollToAnchor();
       },
       error: function(xhr) {
-        $.scalpel.ajax.processErrors(xhr);
+        $.bigfoot.ajax.processErrors(xhr);
         // Remove the overlay
         o.remove();
         clearTimeout(i);
       }
     });
-  }
+  },
 
-  // Navigates to specified `url` by loading the content into #viewport
-  function navigate(url, redirect) {
+  // Navigates to specified `url` by loading the content into `#viewport`
+  navigate: function(url, redirect) {
     if (useHistory) {
       // Add one more replaceState with current URL
       // to allow partial `history.go(-1)`.
@@ -119,15 +118,15 @@ module.exports = (function($) {
         window.history.replaceState({ id: id() }, "", url);
       else
         window.history.pushState({ id: id() }, "", url);
-      load(url);
+      this.load(url);
     } else {
-      $.scalpel.notices.stash();
+      $.bigfoot.notices.stash();
       if (redirect) window.location.replace(url);
       else window.location.href = url;
     }
-  }
+  },
 
-  function scrollToAnchor() {
+  scrollToAnchor: function() {
     var hash = location.href.replace(/.*?(?=#|$)/, "");
     var scrollTarget = $(hash);
     if (scrollTarget.size() == 0)
@@ -135,30 +134,23 @@ module.exports = (function($) {
     scrollTarget.scrollTo();
   }
 
-  if (useHistory)
-    $.scalpel.queue["a[rel='partial']"] = function() {
-      var a = $(this);
-      if (a.attr("rel") == "popup" ||
-        a.attr("target") == "_blank")
-        return;
-      a.addClass("partial-link");
-      a.unbind(".scalpel.partial-link")
-        .bind("click.scalpel.partial-link", function(ev) {
-          if (ev.button != 0 || ev.metaKey || ev.ctrlKey)
-            return true;
-          ev.preventDefault();
-          var href = $(this).attr("href");
-          navigate(href);
-          return false;
-        });
-    };
+};
 
-  return {
-    id: id,
-    timeout: timeout,
-    container: container,
-    navigate: navigate,
-    scrollToAnchor: scrollToAnchor
+
+if (useHistory)
+  $.bigfoot.queue["a[rel='partial']"] = function() {
+    var a = $(this);
+    if (a.attr("rel") == "popup" ||
+      a.attr("target") == "_blank")
+      return;
+    a.addClass("partial-link");
+    a.unbind(".bigfoot.partial-link")
+      .bind("click.bigfoot.partial-link", function(ev) {
+        if (ev.button != 0 || ev.metaKey || ev.ctrlKey)
+          return true;
+        ev.preventDefault();
+        var href = $(this).attr("href");
+        $.bigfoot.viewport.navigate(href);
+        return false;
+      });
   };
-
-})(jQuery);

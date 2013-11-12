@@ -11,18 +11,18 @@ module.exports = function(grunt) {
 
     browserify: {
       basic: {
-        src: ['lib/bundle.js'],
-        dest: 'build/scalpel-<%=pkg.version%>.js'
+        src: ['client/bundle.js'],
+        dest: 'build/bigfoot-<%=pkg.version%>.js'
       }
     },
 
     uglify: {
       options: {
-        banner: '/*! ScalpelJS v.<%=pkg.version%> */\n'
+        banner: '/*! Bigfoot v.<%=pkg.version%> */\n'
       },
       build: {
-        src: 'build/scalpel-<%=pkg.version%>.js',
-        dest: 'build/scalpel-<%=pkg.version%>.min.js'
+        src: 'build/bigfoot-<%=pkg.version%>.js',
+        dest: 'build/bigfoot-<%=pkg.version%>.min.js'
       }
     },
 

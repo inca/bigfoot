@@ -1,70 +1,59 @@
-'use strict';
+$.bigfoot.notices = {
 
-var scalpel = require("./scalpel");
+  timeout: function() {
+    var settings = $.bigfoot.settings.notices || {};
+    return settings.timeout || 10000;
+  },
 
-module.exports = (function($) {
-
-  var s = $.scalpel.settings;
-
-  // Close on escape
-  window.addEventListener("keydown", function(ev) {
-    if (ev.keyCode == 0x1B) {
-      clear();
-    }
-  });
-
-  function timeout() {
-    var t = s['notices.timeout'];
-    return t ? parseInt(t) : 10000;
-  }
-
-  function container() {
+  container: function() {
     return $("#notices");
-  }
+  },
 
-  function hasErrors() {
-    return $(".notice.error:not(:animated)", container()).size() > 0;
-  }
+  hasErrors: function() {
+    return $(".notice.error:not(:animated)", this.container()).size() > 0;
+  },
 
-  function stash() {
+  stash: function() {
     if (window.sessionStorage) {
-      var cnt = container();
+      var cnt = this.container();
       // Delete animating notices before stashing
       $(".notice:animated", cnt).remove();
-      window.sessionStorage.setItem("scalpel.notices", cnt.html());
+      window.sessionStorage.setItem("bigfoot.notices", cnt.html());
       cnt.empty();
     }
-    return $.scalpel.notices;
-  }
+    return this;
+  },
 
-  function unstash() {
+  unstash: function() {
+    var notices = this;
     if (window.sessionStorage) {
-      var html = window.sessionStorage.getItem("scalpel.notices");
+      var html = window.sessionStorage.getItem("bigfoot.notices");
       if (html) {
-        container().append(html);
-        window.sessionStorage.removeItem("scalpel.notices");
-        $(".notice", container()).each(function() {
-          initElem(this);
+        notices.container().append(html);
+        window.sessionStorage.removeItem("bigfoot.notices");
+        $(".notice", notices.container()).each(function() {
+          notices.initElem(this);
         });
       }
     }
-    return $.scalpel.notices;
-  }
+    return this;
+  },
 
-  function initElem(elem) {
+  initElem: function(elem) {
+    var notices = this;
     var e = $(elem);
     $(".hide", e).remove();
     var handle = $("<span class='hide'/>");
-    handle.bind("click.scalpel.notices", function() {
-      dispose(e);
+    handle.bind("click.bigfoot.notices", function() {
+      notices.dispose(e);
     });
     e.prepend(handle);
     setTimeout(function() {
-      dispose(e);
+      notices.dispose(e);
     }, timeout());
-  }
+  },
 
-  function mkElem(notice) {
+  mkElem: function(notice) {
     var kind = notice.kind;
     var msg = notice.msg
       .replace(/&quot;/g, "\"")
@@ -72,68 +61,55 @@ module.exports = (function($) {
       .replace(/&gt;/g,">")
       .replace(/&amp;/g, "&");
     var e = $("<div class=\"notice " + kind + "\">" + msg +"</div>");
-    initElem(e);
+    this.initElem(e);
     return e;
-  }
+  },
 
-  function add(notice) {
-    container().append(mkElem(notice));
-    return $.scalpel.notices;
-  }
+  add: function(notice) {
+    this.container().append(this.mkElem(notice));
+    return this;
+  },
 
-  function addError(msg) {
-    return add({kind: "error", msg: msg});
-  }
+  error: function(msg) {
+    return this.add({kind: "error", msg: msg});
+  },
 
-  function addWarn(msg) {
-    return add({kind: "warn", msg: msg});
-  }
+  warn: function(msg) {
+    return this.add({kind: "warn", msg: msg});
+  },
 
-  function addInfo(msg) {
-    return add({kind: "info", msg: msg});
-  }
+  info: function(msg) {
+    return this.add({kind: "info", msg: msg});
+  },
 
-  function addAll(data) {
-    if (data && data.notices) {
-      for (var i in data.notices) {
-        var n = data.notices[i];
-        add(n);
-      }
-    }
-    return $.scalpel.notices;
-  }
+  addAll: function(data) {
+    if (data && data.notices)
+      for (var i in data.notices)
+        this.add(data.notices[i]);
+    return this;
+  },
 
-  function clear() {
-    return dispose($(".notice", container()));
-  }
+  clear: function() {
+    return this.dispose($(".notice", this.container()));
+  },
 
-  function dispose(elems) {
+  dispose: function(elems) {
     elems.fadeOut("fast", function() {
       $(this).remove();
     });
-    return $.scalpel.notices;
+    return this;
   }
 
-  // Unstash on load
-  $(function() {
-    unstash();
-  });
+};
 
-  return {
-    timeout: timeout,
-    container: container,
-    hasErrors: hasErrors,
-    stash: stash,
-    unstash: unstash,
-    initElem: initElem,
-    mkElem: mkElem,
-    clear: clear,
-    dispose: dispose,
-    add: add,
-    addInfo: addInfo,
-    addWarn: addWarn,
-    addError: addError,
-    addAll: addAll
-  };
+// Close notices on ESC
+window.addEventListener("keydown", function(ev) {
+  if (ev.keyCode == 0x1B) {
+    clear();
+  }
+});
 
-})(jQuery);
+// Unstash notices on load
+$(function() {
+  $.bigfoot.notices.unstash();
+});

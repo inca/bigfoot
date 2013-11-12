@@ -1,15 +1,16 @@
 'use strict';
 
-module.exports = (function($) {
+$.bigfoot.msg["Close"] = "Close";
 
-  $.msg["Close"] = "Close";
+$.bigfoot.ibox = {
 
-  function get() {
-    init();
+  get: function() {
+    this.init();
     return $("#ibox");
-  }
+  },
 
-  function init() {
+  init: function() {
+    var ibox = this;
     var cnt = $("#ibox");
     if (cnt.size() > 0)
       return;
@@ -20,26 +21,57 @@ module.exports = (function($) {
       .unbind(".ibox")
       .bind("keydown.ibox", function(ev) {
         if (ev.keyCode == 0x1B)
-          close();
+          ibox.close();
       });
     cnt.bind("click.ibox", function(ev) {
-      close();
+      ibox.close();
     });
-  }
+  },
 
-  function close() {
+  close: function() {
     var cnt = $("#ibox");
     $("iframe", cnt).remove();
     cnt.fadeOut(300, function() {
       $(this).remove();
     });
-  }
+  },
 
-  function isVisible() {
+  isVisible: function() {
     return $("#ibox").is(":visible");
-  }
+  },
 
-  function load(href) {
+  show: function(data) {
+    var ibox = this;
+    var content = $(data);
+    // Trigger viewport unload
+    var e = $.Event("viewportUnload");
+    $(window).trigger(e);
+    if (e.isDefaultPrevented()) return;
+    // Show ibox
+    var cnt = this.get().empty();
+    var wrapper = $('<div id="ibox-wrapper"></div>');
+    wrapper.append(content);
+    cnt.append(wrapper);
+    var _close = $('<div id="ibox-close"></div>');
+    _close.attr("title", $.bigfoot.msg['Close']);
+    wrapper.append(_close);
+    cnt.fadeIn(300, function() {
+      $("body").animate({scrollTop: cnt.offset().top}, 300);
+      cnt.trigger("ibox_load");
+      $.bigfoot.init(wrapper);
+      wrapper
+        .unbind(".ibox")
+        .bind("click.ibox", function(ev) {
+          ev.stopPropagation();
+        });
+      $("a.close", content)
+        .add(_close)
+        .bind("click.ibox", ibox.close);
+    });
+  },
+
+  load: function(href) {
+    var ibox = this;
     $.ajax({
       url: href,
       dataType: "html",
@@ -48,48 +80,9 @@ module.exports = (function($) {
         "__": new Date().getTime().toString()
       },
       success: function(data) {
-        show(data);
+        ibox.show(data);
       },
-      error: $.scalpel.ajax.processErrors
+      error: $.bigfoot.ajax.processErrors
     });
   }
-
-  function show(data) {
-    var content = $(data);
-    // Trigger viewport unload
-    var e = $.Event("viewportUnload");
-    $(window).trigger(e);
-    if (e.isDefaultPrevented()) return;
-    // Show ibox
-    var cnt = get().empty();
-    var wrapper = $('<div id="ibox-wrapper"></div>');
-    wrapper.append(content);
-    cnt.append(wrapper);
-    var _close = $('<div id="ibox-close"></div>');
-    _close.attr("title", $.msg['Close']);
-    wrapper.append(_close);
-    cnt.fadeIn(300, function() {
-      $("body").animate({scrollTop: cnt.offset().top}, 300);
-      cnt.trigger("ibox_load");
-      $.scalpel.init(wrapper);
-      wrapper
-        .unbind(".ibox")
-        .bind("click.ibox", function(ev) {
-          ev.stopPropagation();
-        });
-      $("a.close", content)
-        .add(_close)
-        .bind("click.ibox", close);
-    });
-  }
-
-  return {
-    get: get,
-    init: init,
-    close: close,
-    isVisible: isVisible,
-    show: show,
-    load: load
-  };
-
-})(jQuery);
+};

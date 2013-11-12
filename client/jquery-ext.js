@@ -1,96 +1,87 @@
-(function($) {
-// ========
-// Standard jQuery extensions
-// ========
+$.fn.lookup = function(selector) {
+  var elems = this.find(selector);
+  if (this.is(selector))
+    return elems.add(this);
+  else return elems;
+};
 
-  // Find inside element or match itself
+// Insert at index function
 
-  $.fn.lookup = function(selector) {
-    var elems = this.find(selector);
-    if (this.is(selector))
-      return elems.add(this);
-    else return elems;
-  };
+$.fn.insertAt = function(index, element) {
+  var lastIndex = this.children().size();
+  if (index < 0) {
+    index = Math.max(0, lastIndex + 1 + index)
+  }
+  this.append(element);
+  if (index < lastIndex) {
+    this.children().eq(index).before(this.children().last());
+  }
+  return this;
+};
 
-  // Insert at index function
+// Insert-at-caret
 
-  $.fn.insertAt = function(index, element) {
-    var lastIndex = this.children().size();
-    if (index < 0) {
-      index = Math.max(0, lastIndex + 1 + index)
+$.fn.insertAtCaret = function(value) {
+  return this.each(function() {
+    if (document.selection) {
+      this.focus();
+      var sel = document.selection.createRange();
+      sel.text = value;
+      this.focus();
+    } else if (typeof(this.selectionStart) != "undefined") {
+      var startPos = this.selectionStart;
+      var endPos = this.selectionEnd;
+      var scrollTop = this.scrollTop;
+      this.value = this.value.substring(0, startPos) +
+        value + this.value.substring(endPos,this.value.length);
+      this.focus();
+      this.selectionStart = startPos + value.length;
+      this.selectionEnd = startPos + value.length;
+      this.scrollTop = scrollTop;
+    } else {
+      this.value += value;
+      this.focus();
     }
-    this.append(element);
-    if (index < lastIndex) {
-      this.children().eq(index).before(this.children().last());
-    }
-    return this;
-  };
+  })
+};
 
-  // Insert-at-caret
+// Scroll to element
 
-  $.fn.insertAtCaret = function(value) {
-    return this.each(function() {
-      if (document.selection) {
-        this.focus();
-        var sel = document.selection.createRange();
-        sel.text = value;
-        this.focus();
-      } else if (typeof(this.selectionStart) != "undefined") {
-        var startPos = this.selectionStart;
-        var endPos = this.selectionEnd;
-        var scrollTop = this.scrollTop;
-        this.value = this.value.substring(0, startPos) +
-          value + this.value.substring(endPos,this.value.length);
-        this.focus();
-        this.selectionStart = startPos + value.length;
-        this.selectionEnd = startPos + value.length;
-        this.scrollTop = scrollTop;
-      } else {
-        this.value += value;
-        this.focus();
-      }
-    })
-  };
+$.fn.scrollTo = function() {
 
-  // Scroll to element
+  var scrollTop = -1;
 
-  $.fn.scrollTo = function() {
+  this.each(function() {
+    scrollTop = $(this).offset().top;
+  });
 
-    var scrollTop = -1;
+  if (scrollTop >= 0)
+    $("html, body").animate({
+      "scrollTop": scrollTop
+    }, 200);
+};
 
-    this.each(function() {
-      scrollTop = $(this).offset().top;
-    });
+// Shuffle elements
 
-    if (scrollTop >= 0)
-      $("html, body").animate({
-        "scrollTop": scrollTop
-      }, 200);
-  };
+$.fn.shuffle = function() {
 
-  // Shuffle elements
+  function rnd(max) {
+    return Math.floor(Math.random() * max);
+  }
 
-  $.fn.shuffle = function() {
+  var all = this.get();
 
-    function rnd(max) {
-      return Math.floor(Math.random() * max);
-    }
+  var shuffled = $.map(all, function() {
+    var random = rnd(all.length),
+      randEl = $(all[random]).clone(true)[0];
+    all.splice(random, 1);
+    return randEl;
+  });
 
-    var all = this.get();
+  this.each(function(i){
+    $(this).replaceWith($(shuffled[i]));
+  });
 
-    var shuffled = $.map(all, function() {
-        var random = rnd(all.length),
-          randEl = $(all[random]).clone(true)[0];
-        all.splice(random, 1);
-        return randEl;
-      });
+  return $(shuffled);
 
-    this.each(function(i){
-      $(this).replaceWith($(shuffled[i]));
-    });
-
-    return $(shuffled);
-
-  };
-
-})(jQuery);
+};

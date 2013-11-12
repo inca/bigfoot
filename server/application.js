@@ -7,7 +7,8 @@ module.exports = function() {
   var app = require('express')();
 
   function __(name, fn) {
-    return { route: '', name: name, handle: fn };
+    fn.name = name;
+    return { route: '', handle: fn };
   }
 
   app.installLast = app.install = function(name, fn) {
@@ -25,7 +26,7 @@ module.exports = function() {
   app.installBefore = function(thatName, name, fn) {
     debug("Installing “" + name + "” before “" + thatName + "”");
     for (var i = 0; i < this.stack.length; i++)
-      if (this.stack[i].name == thatName)
+      if (this.stack[i].handle.name == thatName)
         break;
     this.stack.splice(i, 0, __(name, fn));
     return app;
@@ -34,7 +35,7 @@ module.exports = function() {
   app.installAfter = function(thatName, name, fn) {
     debug("Installing “" + name + "” after “" + thatName + "”");
     for (var i = 0; i < this.stack.length; i++)
-      if (this.stack[i].name == thatName)
+      if (this.stack[i].handle.name == thatName)
         break;
     if (i == this.stack.length)
       this.installLast(name, fn);
@@ -45,7 +46,7 @@ module.exports = function() {
 
   app.dumpMiddleware = function() {
     return this.stack.map(function(m) {
-      return m.name || '<unknown middleware>';
+      return m.name || '<anonymous>';
     });
   };
 

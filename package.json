@@ -1,11 +1,11 @@
 {
-  "name": "scalpel",
-  "version": "0.3.0",
-  "description": "Express-based App Framework",
+  "name": "bigfoot",
+  "version": "0.0.0",
+  "description": "Client-server Application Framework",
   "main": "server/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/inca/scalpeljs"
+    "url": "https://github.com/inca/bigfoot"
   },
   "author": "Boris Okunskiy",
   "contributors": [
@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/inca/scalpeljs/issues"
+    "url": "https://github.com/inca/bigfoot/issues"
   },
   "dependencies": {
     "express": "*",
