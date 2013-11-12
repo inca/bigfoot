@@ -118,6 +118,7 @@ module.exports = function(options) {
   app.install('stylus', stylus.middleware({
     src: options.publicPath || './public',
     compile: function(str, path) {
+      console.log("Compiling.");
       return stylus(str)
         .set('filename', path)
         .set('compress', true)
@@ -130,7 +131,7 @@ module.exports = function(options) {
   app.configure('development', function() {
     BundleUp(app, options.assetsPath, {
       staticRoot: options.publicPath,
-      staticUrlRoot: options.cdnOrigin,
+      staticUrlRoot: '/',
       bundle: false,
       minifyCss: false,
       minifyJs: false
