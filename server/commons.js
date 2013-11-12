@@ -23,7 +23,7 @@ module.exports = function(options) {
 
     req.getString = function(name, defaultValue) {
       var value = req.getParam(name);
-      return typeof(value) == 'string' ? value : defaultValue;
+      return typeof(value) == 'string' ? value : defaultValue || '';
     };
 
     req.getStrings = function(name, defaultValue) {
@@ -38,7 +38,7 @@ module.exports = function(options) {
 
     req.getInt = function(name, defaultValue) {
       var value = parseInt(req.getParam(name));
-      return isNaN(value) ? defaultValue : value;
+      return isNaN(value) ? defaultValue || 0 : value;
     };
 
     req.getInts = function(name, defaultValue) {
@@ -55,7 +55,7 @@ module.exports = function(options) {
 
     req.getFloat = function(name, defaultValue) {
       var value = parseFloat(req.getParam(name));
-      return isNaN(value) ? defaultValue : value;
+      return isNaN(value) ? defaultValue || 0 : value;
     };
 
     req.getFloats = function(name, defaultValue) {
@@ -72,7 +72,7 @@ module.exports = function(options) {
 
     req.getMoment = function(name, defaultValue) {
       var d = moment(req.getString(name), 'YYYY-MM-DD');
-      return d.isValid() ? d : moment(defaultValue);
+      return d.isValid() ? d : moment(defaultValue || new Date());
     };
 
     req.getMoments = function(name, defaultValue) {
