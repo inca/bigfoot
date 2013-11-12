@@ -85,9 +85,11 @@ $.bigfoot.install('form.partial', function() {
         success: function(data) {
           form.trigger("postSubmit", data);
           $.bigfoot.ajax.processResponse(data, stay);
-          submits.show();
-          ph.remove();
-          $("input[type='password'], .cleanup", form).val("");
+          if (!data.redirect) {
+            submits.show();
+            ph.remove();
+            $("input[type='password'], .cleanup", form).val("");
+          }
         },
         error: function(xhr) {
           submits.show();
