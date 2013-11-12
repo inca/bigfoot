@@ -70,6 +70,7 @@ module.exports = function(options) {
   app.install('urlencoded', express.urlencoded());
   app.install('json', express.json());
   app.install('multipart', multipart());
+  app.install('methodOverride', express.methodOverride());
 
   // Session with connect-redis
   var secret = (options.session && options.session.secret) || '';
@@ -82,7 +83,10 @@ module.exports = function(options) {
   app.install('session', express.session({
     key: 'sid',
     secret: secret,
-    store: new RedisStore(redisOptions)
+    store: new RedisStore(redisOptions),
+    cookie: {
+      domain: options.session && options.session.domain
+    }
   }));
 
   // Session-based authentication backed by Mongoose

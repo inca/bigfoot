@@ -24,9 +24,7 @@ module.exports = function(options) {
 
     req.rememberLocation = function() {
       if (req.route.method == 'get' && !req.xhr)
-        res.cookie("loc", res.locals.origin + req.path, {
-          domain: options.cookieDomain
-        });
+        res.cookie("loc", req.path);
     };
 
     req.lastLocation = function() {
