@@ -105,7 +105,7 @@ $.bigfoot.notices = {
 // Close notices on ESC
 window.addEventListener("keydown", function(ev) {
   if (ev.keyCode == 0x1B) {
-    clear();
+    $.bigfoot.notices.clear();
   }
 });
 

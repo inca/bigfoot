@@ -1029,7 +1029,7 @@ $.bigfoot.notices = {
 // Close notices on ESC
 window.addEventListener("keydown", function(ev) {
   if (ev.keyCode == 0x1B) {
-    clear();
+    $.bigfoot.notices.clear();
   }
 });
 
@@ -1051,7 +1051,7 @@ if (useHistory) {
       if (!ev.state) return;
       // `viewportId` from `state` must match #viewport(data-viewport-id)
       var viewportId = ev.state.id;
-      if (viewportId && viewportId == id()) {
+      if (viewportId && viewportId == $.bigfoot.viewport.id()) {
         load(location.href);
       } else {
         // reload whole page
@@ -1151,13 +1151,14 @@ $.bigfoot.viewport = {
   // Navigates to specified `url` by loading the content into `#viewport`
   navigate: function(url, redirect) {
     if (useHistory) {
+      var id = $.bigfoot.viewport.id();
       // Add one more replaceState with current URL
       // to allow partial `history.go(-1)`.
-      window.history.replaceState({ id: id() }, "", location.href);
+      window.history.replaceState({ id: id }, "", location.href);
       if (redirect)
-        window.history.replaceState({ id: id() }, "", url);
+        window.history.replaceState({ id: id }, "", url);
       else
-        window.history.pushState({ id: id() }, "", url);
+        window.history.pushState({ id: id }, "", url);
       this.load(url);
     } else {
       $.bigfoot.notices.stash();
@@ -1175,7 +1176,6 @@ $.bigfoot.viewport = {
   }
 
 };
-
 
 if (useHistory)
   $.bigfoot.install("a[rel='partial']", function() {
