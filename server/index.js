@@ -23,25 +23,22 @@ module.exports = function(options) {
   // Main configurables
 
   if (!options.port) {
-    console.log('Specify `options.port` (default is 50777)');
-    options.port = 50777;
+    console.log('Specify `options.port`.');
   }
 
   if (!options.schema) {
-    console.log('Specify `options.schema` for production (default is http)');
+    console.log('Specify `options.schema` (default is http).');
     options.schema = 'http';
   }
 
   if (!options.domain) {
-    console.log('Specify `options.domain` for production');
-    options.domain = 'localhost:' + options.port;
+    console.log('Specify `options.domain`.');
   }
 
   options.origin = options.schema + '://' + options.domain;
 
   if (!options.cdnDomain) {
-    console.log('Specify `options.cdnDomain` for static (default is ' +
-      options.domain + ")");
+    console.log('Specify `options.cdnDomain` for static serving.');
     options.cdnDomain = options.domain;
   }
 

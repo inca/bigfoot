@@ -132,6 +132,12 @@ module.exports = function(options) {
 
     });
 
+    // Copy main configurables to res.locals
+
+    ['schema', 'domain', 'origin', 'cdnDomain', 'cdnOrigin'].forEach(function(k) {
+      res.locals[k] = options[k];
+    });
+
     next();
 
   };
