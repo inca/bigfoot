@@ -108,7 +108,9 @@ $.bigfoot = {
   require("./components/retina");
   require("./components/load-into");
 
-  $.bigfoot.init($("body"));
+  $(function() {
+    $.bigfoot.init($("body"));
+  });
 
 })(jQuery);
 
@@ -972,7 +974,7 @@ $.bigfoot.notices = {
     e.prepend(handle);
     setTimeout(function() {
       notices.dispose(e);
-    }, timeout());
+    }, this.timeout());
   },
 
   mkElem: function(notice) {

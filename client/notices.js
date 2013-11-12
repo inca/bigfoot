@@ -50,7 +50,7 @@ $.bigfoot.notices = {
     e.prepend(handle);
     setTimeout(function() {
       notices.dispose(e);
-    }, timeout());
+    }, this.timeout());
   },
 
   mkElem: function(notice) {

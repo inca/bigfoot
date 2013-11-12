@@ -21,7 +21,9 @@
   require("./components/retina");
   require("./components/load-into");
 
-  $.bigfoot.init($("body"));
+  $(function() {
+    $.bigfoot.init($("body"));
+  });
 
 })(jQuery);
 
