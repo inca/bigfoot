@@ -1,6 +1,6 @@
 'use strict';
 
-$.bigfoot.push('form', function() {
+$.bigfoot.install('form', function() {
 
   var form = $(this);
 
@@ -35,7 +35,7 @@ $.bigfoot.push('form', function() {
 
 // Partial forms are somewhat PJAXy, but notices-aware.
 
-$.bigfoot.push('form.partial', function() {
+$.bigfoot.install('form.partial', function() {
 
   var form = $(this);
 
@@ -108,7 +108,7 @@ $.bigfoot.push('form.partial', function() {
 
 // Controls inside forms marked `.submit` will submit the form.
 
-$.bigfoot.push('form :input.submit', function() {
+$.bigfoot.install('form :input.submit', function() {
 
   var input = $(this);
 
@@ -120,7 +120,7 @@ $.bigfoot.push('form :input.submit', function() {
 
 });
 
-$.bigfoot.push('form a.submit', function() {
+$.bigfoot.install('form a.submit', function() {
   var a = $(this);
   a.unbind(".bigfoot.submit")
     .bind("click.bigfoot.submit", function(ev) {
@@ -132,7 +132,7 @@ $.bigfoot.push('form a.submit', function() {
 
 // Forms marked `data-load-into` load the contents into specified container element.
 
-$.bigfoot.push('form[data-load-into]', function() {
+$.bigfoot.install('form[data-load-into]', function() {
   var form = $(this);
   var cnt = $(form.attr("data-load-into"));
 
@@ -181,7 +181,7 @@ $.bigfoot.push('form[data-load-into]', function() {
 $.bigfoot.msg["form.unload.warn"] = "Warning! If you leave this page, all unsaved changes will be lost.";
 $.bigfoot.msg["viewportUnload.warn"] = "Warning! If you continue, all unsaved changed will be lost. Are you sure you want to continue?";
 
-$.bigfoot.push("form.unload-warn", function() {
+$.bigfoot.install("form.unload-warn", function() {
   var form = $(this);
   updateInitialState();
   form.bind("submit.bigfoot.unload-warn", updateInitialState);

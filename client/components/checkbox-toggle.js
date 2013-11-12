@@ -1,4 +1,4 @@
-$.bigfoot.push('input[type="checkbox"][data-toggle]', function() {
+$.bigfoot.install('input[type="checkbox"][data-toggle]', function() {
   var input = $(this);
   var selector = input.attr('data-toggle');
   var key = input.attr('data-key') || "bigfoot.toggle(" + selector + ")";

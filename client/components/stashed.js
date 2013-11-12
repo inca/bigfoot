@@ -1,7 +1,7 @@
 $.bigfoot.msg['changes.dirty'] = "Changes not saved.";
 $.bigfoot.msg['changes.revert'] = "Revert changes";
 
-$.bigfoot.queue('textarea.stashed', function() {
+$.bigfoot.install('textarea.stashed', function() {
   var textarea = $(this);
 
   // Id attribute on textarea is mandatory

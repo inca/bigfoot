@@ -20,7 +20,7 @@ $(function() {
   });
 });
 
-$.bigfoot.push('[data-switch]', function() {
+$.bigfoot.install('[data-switch]', function() {
 
   var switcher = $(this);
 

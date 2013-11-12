@@ -7,9 +7,17 @@ module.exports = function() {
   var app = require('express')();
 
   function __(name, fn) {
-    fn.name = name;
-    return { route: '', handle: fn };
+    return { route: '', name: name, handle: fn };
   }
+
+  app.getMiddlewareIndex = function(thatName) {
+    for (var i = 0; i < this.stack.length; i++) {
+      var h = this.stack[i];
+      if ((h.name || h.handle.name) == thatName)
+        break;
+    }
+    return i;
+  };
 
   app.installLast = app.install = function(name, fn) {
     debug("Installing “" + name + "” as the last one");
@@ -25,18 +33,14 @@ module.exports = function() {
 
   app.installBefore = function(thatName, name, fn) {
     debug("Installing “" + name + "” before “" + thatName + "”");
-    for (var i = 0; i < this.stack.length; i++)
-      if (this.stack[i].handle.name == thatName)
-        break;
+    var i = this.getMiddlewareIndex(thatName);
     this.stack.splice(i, 0, __(name, fn));
     return app;
   };
 
   app.installAfter = function(thatName, name, fn) {
     debug("Installing “" + name + "” after “" + thatName + "”");
-    for (var i = 0; i < this.stack.length; i++)
-      if (this.stack[i].handle.name == thatName)
-        break;
+    var i = this.getMiddlewareIndex(thatName);
     if (i == this.stack.length)
       this.installLast(name, fn);
     else

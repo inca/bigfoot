@@ -2,7 +2,7 @@ $.bigfoot.placeholder = function() {
   return $('<div class="loading"/>')
 };
 
-$.bigfoot.push('[data-ref]', function() {
+$.bigfoot.install('[data-ref]', function() {
   var selector = $(this).attr("data-ref");
   var cssClass = $(this).attr("data-ref-class");
   if (!cssClass)
@@ -10,18 +10,18 @@ $.bigfoot.push('[data-ref]', function() {
   $(selector).addClass(cssClass);
 });
 
-$.bigfoot.push('.focus', function() {
+$.bigfoot.install('.focus', function() {
   $(this).focus();
 });
 
-$.bigfoot.push('[data-set-focus]', function() {
+$.bigfoot.install('[data-set-focus]', function() {
   $(this).unbind(".bigfoot.setFocus")
     .bind("click.bigfoot.setFocus", function () {
       $($(this).attr("data-set-focus")).focus();
     });
 });
 
-$.bigfoot.push('a[rel="popup"]', function() {
+$.bigfoot.install('a[rel="popup"]', function() {
   $(this).unbind("click.bigfoot.popup")
     .bind("click.bigfoot.popup", function(ev) {
       var a = $(this);
@@ -34,7 +34,7 @@ $.bigfoot.push('a[rel="popup"]', function() {
     });
 });
 
-$.bigfoot.push('[data-show]', function() {
+$.bigfoot.install('[data-show]', function() {
   var elem = $(this);
   elem.unbind(".bigfoot.show")
     .bind("click.bigfoot.show", function() {
@@ -45,7 +45,7 @@ $.bigfoot.push('[data-show]', function() {
     });
 });
 
-$.bigfoot.push('[data-hide]', function() {
+$.bigfoot.install('[data-hide]', function() {
   $(this).unbind(".bigfoot.hide")
     .bind("click.bigfoot.hide", function() {
       $($(this).attr("data-hide")).hide();

@@ -1,4 +1,4 @@
-$.bigfoot.queue('.toggler', function() {
+$.bigfoot.install('.toggler', function() {
 
   var e = $(this);
 

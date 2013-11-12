@@ -8,7 +8,7 @@ $.bigfoot.isRetina = function() {
   return window.matchMedia && window.matchMedia(mediaQuery).matches;
 };
 
-$.bigfoot.push('img.retina', function() {
+$.bigfoot.install('img.retina', function() {
   var img = $(this);
 
   if ($.bigfoot.isRetina()) {

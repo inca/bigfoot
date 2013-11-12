@@ -11,7 +11,7 @@ $.bigfoot = {
 
   queue: [],
 
-  run: function(ctx) {
+  init: function(ctx) {
     this.queue.forEach(function(handle) {
       ctx.lookup(handle.selector).each(handle.fn)
     });

@@ -138,7 +138,7 @@ $.bigfoot.viewport = {
 
 
 if (useHistory)
-  $.bigfoot.queue["a[rel='partial']"] = function() {
+  $.bigfoot.install("a[rel='partial']", function() {
     var a = $(this);
     if (a.attr("rel") == "popup" ||
       a.attr("target") == "_blank")
@@ -153,4 +153,4 @@ if (useHistory)
         $.bigfoot.viewport.navigate(href);
         return false;
       });
-  };
+  });

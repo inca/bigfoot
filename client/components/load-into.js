@@ -1,4 +1,4 @@
-$.bigfoot.push('a[data-load-into]', function() {
+$.bigfoot.install('a[data-load-into]', function() {
   var a = $(this);
   var url = a.attr("href");
   var container = $(a.attr("data-load-into"));

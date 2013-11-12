@@ -1,4 +1,4 @@
-$.bigfoot.push('[data-load]', function() {
+$.bigfoot.install('[data-load]', function() {
   var block = $(this);
   var scrollContainer = $(block.attr('data-scroll-container') || window);
   var url = block.attr("data-load");
