@@ -40,6 +40,7 @@ module.exports = function() {
         req.files[name] = files[name].map(function(file) {
           file.name = decodeURI(file.originalFilename || '')
             .replace(/[\/\\:;]/g, '_');
+          file.safeName = file.name.trim().toLowerCase().replace(/[^a-z0-9._-]/gi, '_');
           file.type = file.headers['content-type'];
           return file;
         });
