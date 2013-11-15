@@ -33,7 +33,17 @@ module.exports = function() {
       if (err) return next(err);
       debug("Parsed form.");
       req._body = true;
-      req.files = files;
+      // Files are enhanced by adding `type` and `name` members
+      req.files = {};
+      for (var name in files) {
+        if (!files.hasOwnProperty(name)) continue;
+        req.files[name] = files[name].map(function(file) {
+          file.name = decodeURI(file.originalFilename || '')
+            .replace(/[\/\\:;]/g, '_');
+          file.type = file.headers['content-type'];
+          return file;
+        });
+      }
       // Field arrays are flattened
       req.body = flatObject(fields);
       next();
