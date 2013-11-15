@@ -1,6 +1,7 @@
 'use strict';
 
 var multiparty = require('multiparty')
+  , stringex = require('stringex')
   , debug = require('debug')('scalpel:multipart');
 
 function flatObject(obj) {
@@ -39,8 +40,11 @@ module.exports = function() {
         if (!files.hasOwnProperty(name)) continue;
         req.files[name] = files[name].map(function(file) {
           file.name = decodeURI(file.originalFilename || '')
-            .replace(/[\/\\:;]/g, '_');
-          file.safeName = file.name.trim().toLowerCase().replace(/[^a-z0-9._-]/gi, '_');
+            .replace(/[\/\\:;]/g, '_')
+            .trim();
+          file.safeName = stringex
+            .toASCII(file.name.toLowerCase())
+            .replace(/[^a-z0-9._-]/gi, '_');
           file.type = file.headers['content-type'];
           return file;
         });

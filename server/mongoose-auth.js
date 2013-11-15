@@ -24,7 +24,7 @@ module.exports = function(options) {
 
     req.rememberLocation = function() {
       if (req.route.method == 'get' && !req.xhr)
-        res.cookie("loc", req.path);
+        res.cookie("loc", req.path, { maxAge: 600000 });
     };
 
     req.lastLocation = function() {

@@ -1,6 +1,6 @@
 {
   "name": "bigfoot",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Client-server Application Framework",
   "main": "server/index.js",
   "repository": {
@@ -35,7 +35,8 @@
     "underscore": "*",
     "ejs": "*",
     "i18n-2": "*",
-    "debug": "*"
+    "debug": "*",
+    "stringex": "*"
   },
   "devDependencies": {
     "mocha": "*",
