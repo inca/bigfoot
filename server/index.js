@@ -118,7 +118,6 @@ module.exports = function(options) {
   app.install('stylus', stylus.middleware({
     src: options.publicPath || './public',
     compile: function(str, path) {
-      console.log("Compiling.");
       return stylus(str)
         .set('filename', path)
         .set('compress', true)
