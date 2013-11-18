@@ -6,10 +6,9 @@ $.bigfoot.install('a[data-load-into]', function() {
     return;
   var classes = a.attr("data-classes");
   var styles = a.attr("data-styles");
-
   a.click(function(ev) {
-    var ph = $.bigfoot.placeholder();
     ev.preventDefault();
+    var ph = $.bigfoot.placeholder();
     var scrollTop = $(window).scrollTop();
     container.empty().append(ph);
     $.ajax({
@@ -18,7 +17,6 @@ $.bigfoot.install('a[data-load-into]', function() {
       data: {"__" : new Date().getTime().toString()},
       type: "get",
       success: function(data) {
-        $.bigfoot.log("Loaded " + url + " into container " + a.attr("data-load-into"));
         var content = $("<div/>");
         content.attr("data-loaded", url);
         content.attr("class", classes);
@@ -30,7 +28,6 @@ $.bigfoot.install('a[data-load-into]', function() {
         $.bigfoot.init(content);
       },
       error: function() {
-        $.bigfoot.log("Failed to load " + url);
         ph.remove();
       }
     });

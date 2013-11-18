@@ -52,7 +52,7 @@ $.bigfoot = {
       if (this.queue[i].selector == selector)
         break;
     if (i == this.queue.length)
-      $.bigfoot.console.log('Replacing “' + selector + '” failed. Try installing instead.');
+      $.bigfoot.log('Replacing “' + selector + '” failed. Try installing instead.');
     else
       this.queue.splice(i, 1, { selector: selector, fn: fn });
   }

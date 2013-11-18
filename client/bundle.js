@@ -20,6 +20,7 @@
   require("./components/checkbox-toggle");
   require("./components/retina");
   require("./components/load-into");
+  require("./components/lightform");
 
   $(function() {
     $.bigfoot.init($("body"));

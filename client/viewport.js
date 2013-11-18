@@ -42,11 +42,22 @@ $.bigfoot.viewport = {
     return settings.timeout || 500;
   },
 
-  overlay: function() {
-    var overlay = $('<div id="viewport-standby"></div>');
-    overlay.hide();
-    overlay.append('<div class="message">' + $.bigfoot.msg['standby'] + '</div>');
-    return overlay;
+  showStandBy: function() {
+    var overlay = $('#viewport-standby');
+    if (overlay.size() == 0) {
+      overlay = $('<div id="viewport-standby"></div>');
+      overlay.hide();
+      overlay.append('<div class="message">' + $.bigfoot.msg['standby'] + '</div>');
+    }
+    $("body").append(overlay);
+    this._standByTimer = setTimeout(function() {
+      overlay.fadeIn(300);
+    }, this.timeout());
+  },
+
+  hideStandBy: function() {
+    clearTimeout(this._standByTimer);
+    $('#viewport-standby').remove();
   },
 
   // Loads `href` partially into the `#viewport` container
@@ -56,13 +67,8 @@ $.bigfoot.viewport = {
     var e = $.Event("viewportUnload");
     $(window).trigger(e);
     if (e.isDefaultPrevented()) return;
-    // Adding "Please wait" overlay, hidden initially
-    var o = viewport.overlay();
-    $("body").append(o);
-    // When timeout comes, show the overlay
-    var i = setTimeout(function() {
-      o.fadeIn(300);
-    }, viewport.timeout());
+    // Adding "Please wait" overlay
+    viewport.showStandBy();
     // Perform AJAX request
     $.ajax({
       url: href,
@@ -81,8 +87,7 @@ $.bigfoot.viewport = {
         // Assign current viewport id
         cnt.attr("data-viewport-id", viewportId);
         // Remove the overlay
-        o.remove();
-        clearTimeout(i);
+        viewport.hideStandBy();
         // Insert the data
         viewport.container().replaceWith(cnt).remove();
         // Clear `active` class from all partial links
@@ -102,8 +107,7 @@ $.bigfoot.viewport = {
       error: function(xhr) {
         $.bigfoot.ajax.processErrors(xhr);
         // Remove the overlay
-        o.remove();
-        clearTimeout(i);
+        viewport.hideStandBy();
       }
     });
   },
