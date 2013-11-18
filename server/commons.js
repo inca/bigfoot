@@ -16,9 +16,11 @@ module.exports = function(options) {
     // Params coercion
 
     req.getParam = function(name, defaultValue) {
+      var params = req.params || {};
       var body = req.body || {};
       var query = req.query || {};
-      return body[name] || query[name] || defaultValue;
+      return (params.hasOwnProperty(name) && params[name])
+        || body[name] || query[name] || defaultValue;
     };
 
     req.getString = function(name, defaultValue) {
