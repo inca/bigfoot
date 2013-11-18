@@ -48,7 +48,17 @@ module.exports = function() {
     return app;
   };
 
-  app.dumpMiddleware = function() {
+  app.replace = function(name, fn) {
+    debug("Replacing “" + name + "”.");
+    var i = this.getMiddlewareIndex(name);
+    if (i == this.stack.length)
+      console.warn("Replacing “" + name + "” failed. Try installing instead.");
+    else
+      this.stack.splice(i, 1, __(name, fn));
+    return app;
+  };
+
+  app.names = function() {
     return this.stack.map(function(m) {
       return m.name || '<anonymous>';
     });

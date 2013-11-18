@@ -45,6 +45,16 @@ $.bigfoot = {
       this.installLast(selector, fn);
     else
       this.queue.splice(i + 1, 0, { selector: selector, fn: fn });
+  },
+
+  replace: function(selector, fn) {
+    for (var i = 0; i < this.queue.length; i++)
+      if (this.queue[i].selector == selector)
+        break;
+    if (i == this.queue.length)
+      $.bigfoot.console.log('Replacing “' + selector + '” failed. Try installing instead.');
+    else
+      this.queue.splice(i, 1, { selector: selector, fn: fn });
   }
 
 };
