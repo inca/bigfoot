@@ -72,10 +72,10 @@ module.exports = function(options) {
   // Session with connect-redis
   var secret = (options.session && options.session.secret) || '';
   var RedisStore = require('connect-redis')(express);
-  var redisOptions = _.extend({}, options.redis || {}, {
+  var redisOptions = _.extend({
     prefix: 'session:',
     ttl: (options.session && options.session.ttl) || 600
-  });
+  }, options.redis || {});
   app.install('cookie', express.cookieParser(secret));
   app.install('session', express.session({
     key: 'sid',
