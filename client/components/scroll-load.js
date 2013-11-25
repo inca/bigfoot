@@ -2,7 +2,7 @@ $.bigfoot.install('[data-load]', function() {
   var block = $(this);
   var scrollContainer = $(block.attr('data-scroll-container') || window);
   var url = block.attr("data-load");
-  var hash = $.sha256(url);
+  var eventKey = 'scroll.bigfoot.scrollLoad-' + $.sha256(url);
 
   function loadInViewport() {
     if (!block) return;
@@ -10,6 +10,7 @@ $.bigfoot.install('[data-load]', function() {
     var elemName = "<" + tagName + "></" + tagName + ">";
     var viewBottom = $(window).scrollTop() + $(window).height();
     if (block.offset().top < viewBottom) {
+      scrollContainer.unbind(eventKey);
       var ph = $.bigfoot.placeholder();
       var classes = block.attr("class");
       var styles = block.attr("style");
@@ -38,9 +39,7 @@ $.bigfoot.install('[data-load]', function() {
     }
   }
 
-  scrollContainer
-    .unbind("." + hash + '.bigfoot.scrollLoad')
-    .bind("scroll." + hash + ".bigfoot.scrollLoad", loadInViewport);
+  scrollContainer.unbind(eventKey).bind(eventKey, loadInViewport);
 
   $(loadInViewport); // Bind on jQuery ready
 });
