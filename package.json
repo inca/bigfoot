@@ -36,7 +36,9 @@
     "ejs": "*",
     "i18n-2": "*",
     "debug": "*",
-    "stringex": "*"
+    "stringex": "*",
+    "async": "*",
+    "mongoose": "*"
   },
   "devDependencies": {
     "mocha": "*",

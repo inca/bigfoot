@@ -2,7 +2,7 @@
 
 var multiparty = require('multiparty')
   , stringex = require('stringex')
-  , debug = require('debug')('scalpel:multipart');
+  , debug = require('debug')('bigfoot:multipart');
 
 function flatObject(obj) {
   var result = {};

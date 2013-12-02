@@ -2,7 +2,7 @@
 
 module.exports = function(options) {
 
-  var debug = require('debug')('scalpel:auth');
+  var debug = require('debug')('bigfoot:auth');
 
   var User = options.auth && options.auth.model;
 

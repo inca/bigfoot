@@ -5,7 +5,7 @@ var moment = require('moment')
   , fs = require('fs')
   , path = require('path')
   , _ = require('underscore')
-  , debug = require('debug')('scalpel:commons');
+  , debug = require('debug')('bigfoot:commons');
 
 module.exports = function(options) {
 

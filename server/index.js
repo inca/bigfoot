@@ -7,7 +7,7 @@ var Application = require('./application')
   , multipart = require('./multipart')
   , notices = require('./notices')
   , commons = require('./commons')
-  , mongooseAuth = require('./mongoose-auth')
+  , mongooseAuth = require('./auth')
   , _ = require('underscore')
   , i18n = require("i18n-2")
   , BundleUp = require("bundle-up");
@@ -16,38 +16,52 @@ var Application = require('./application')
 
 module.exports = function(options) {
 
-  var app = new Application();
-
   options = options || {};
 
   // Main configurables
 
+  if (!options.id) {
+    console.warn('Please set `options.id` with application identifier.')
+  }
+
   if (!options.port) {
-    console.log('Specify `options.port`.');
+    console.warn('Specify `options.port`.');
   }
 
   if (!options.schema) {
-    console.log('Specify `options.schema` (default is http).');
+    console.warn('Specify `options.schema` (default is http).');
     options.schema = 'http';
   }
 
   if (!options.domain) {
-    console.log('Specify `options.domain`.');
+    console.warn('Specify `options.domain`.');
   }
 
   options.origin = options.schema + '://' + options.domain;
 
   if (!options.cdnDomain) {
-    console.log('Specify `options.cdnDomain` for static serving.');
+    console.warn('Specify `options.cdnDomain` for static serving.');
     options.cdnDomain = options.domain;
   }
 
   options.cdnOrigin = options.schema + '://' + options.cdnDomain;
 
   if (!options.assetsPath) {
-    console.log('Specify `options.assetsPath` for Bundle Up.');
+    console.warn('Specify `options.assetsPath` for Bundle Up.');
     options.assetsPath = './assets'
   }
+
+  if (!options.redis) {
+    console.warn('Specify `options.redis` with Redis connection settings.')
+  }
+
+  if (!options.mongo) {
+    console.warn('Specify `options.mongo` with Mongo connection settings.')
+  }
+
+  // Express app
+
+  var app = new Application(options);
 
   // Views
 
