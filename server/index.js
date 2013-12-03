@@ -44,7 +44,7 @@ module.exports = function(options) {
     options.cdnDomain = options.domain;
   }
 
-  options.cdnOrigin = options.schema + '://' + options.cdnDomain;
+  options.cdnOrigin = '//' + options.cdnDomain;
 
   if (!options.assetsPath) {
     console.warn('Specify `options.assetsPath` for Bundle Up.');
