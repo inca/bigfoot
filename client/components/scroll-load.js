@@ -5,7 +5,6 @@ $.bigfoot.install('[data-load]', function() {
   var eventKey = 'scroll.bigfoot.scrollLoad-' + $.sha256(url);
 
   function loadInViewport() {
-    if (!block) return;
     var tagName = block[0].tagName.toLowerCase();
     var elemName = "<" + tagName + "></" + tagName + ">";
     var viewBottom = $(window).scrollTop() + $(window).height();
@@ -15,7 +14,6 @@ $.bigfoot.install('[data-load]', function() {
       var classes = block.attr("class");
       var styles = block.attr("style");
       block.replaceWith(ph).remove();
-      block = null;
       $.ajax({
         dataType: "html",
         url: url,
