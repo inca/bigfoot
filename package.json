@@ -1,6 +1,6 @@
 {
   "name": "bigfoot",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Client-server Application Framework",
   "main": "server/index.js",
   "repository": {
