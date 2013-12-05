@@ -154,7 +154,7 @@ module.exports = function(options) {
   app.configure('production', function() {
     BundleUp(app, options.assetsPath, {
       staticRoot: options.publicPath,
-      staticUrlRoot: options.cdnOrigin,
+      staticUrlRoot: '/' + options.cdnOrigin,
       bundle: true,
       minifyCss: true,
       minifyJs: true
