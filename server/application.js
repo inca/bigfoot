@@ -74,7 +74,11 @@ module.exports = function(options) {
     var appId = options.id + '@' + port;
 
     // Graceful shutdown
-    process.on('SIGINT', function() {
+
+    var shutdown = function() {
+      if (app.shuttingDown)
+        return;
+      app.shuttingDown = true;
       console.log(appId + ': shutting down.');
       server.close(function() {
         mongoose.disconnect(function() {
@@ -82,7 +86,10 @@ module.exports = function(options) {
           process.exit(0);
         });
       });
-    });
+    };
+
+    process.on('SIGINT', shutdown);
+    process.on('SIGTERM', shutdown);
 
     mongoose.connect(options.mongo.url, function() {
       debug('Connected to Mongo @ ' + options.mongo.url);
