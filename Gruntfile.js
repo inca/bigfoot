@@ -13,6 +13,10 @@ module.exports = function(grunt) {
       basic: {
         src: ['client/bundle.js'],
         dest: 'build/bigfoot-<%=pkg.version%>.js'
+      },
+      noinit: {
+        src: ['client/bundle-noinit.js'],
+        dest: 'build/bigfoot-noinit-<%=pkg.version%>.js'
       }
     },
 
@@ -20,9 +24,13 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! Bigfoot v.<%=pkg.version%> */\n'
       },
-      build: {
+      basic: {
         src: 'build/bigfoot-<%=pkg.version%>.js',
         dest: 'build/bigfoot-<%=pkg.version%>.min.js'
+      },
+      noinit: {
+        src: 'build/bigfoot-noinit-<%=pkg.version%>.js',
+        dest: 'build/bigfoot-noinit-<%=pkg.version%>.min.js'
       }
     },
 
