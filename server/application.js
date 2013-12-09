@@ -8,7 +8,53 @@ module.exports = function(options) {
 
   this.options = options;
 
+  options = options || {};
+
+  // Main configurables
+
+  if (!options.id) {
+    console.warn('Please set `options.id` with application identifier.')
+  }
+
+  if (!options.port) {
+    console.warn('Specify `options.port`.');
+  }
+
+  if (!options.schema) {
+    console.warn('Specify `options.schema` (default is http).');
+    options.schema = 'http';
+  }
+
+  if (!options.domain) {
+    console.warn('Specify `options.domain`.');
+  }
+
+  if (!options.publicPath) {
+    console.warn('Specify `options.publicPath` to point to your static assets.');
+  }
+
+  options.origin = options.schema + '://' + options.domain;
+
+  if (!options.cdnDomain) {
+    console.warn('Specify `options.cdnDomain` for static serving.');
+    options.cdnDomain = options.domain;
+  }
+
+  options.cdnOrigin = '//' + options.cdnDomain;
+
+  if (!options.redis) {
+    console.warn('Specify `options.redis` with Redis connection settings.')
+  }
+
+  if (!options.mongo) {
+    console.warn('Specify `options.mongo` with Mongo connection settings.')
+  }
+
+  // Create Express application
+
   var app = require('express')();
+
+  // Install middleware management on top of it
 
   function __(name, fn) {
     return { route: '', name: name, handle: fn };
@@ -68,6 +114,8 @@ module.exports = function(options) {
     });
   };
 
+  // Add run stuff
+
   app.run = function(cb) {
     var server = this.server = http.createServer(app);
     var port = options.port || process.ENV.port;
@@ -102,6 +150,8 @@ module.exports = function(options) {
 
     return this;
   };
+
+  // We're done in here
 
   return app;
 

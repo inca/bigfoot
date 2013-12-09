@@ -16,50 +16,7 @@ var Application = require('./application')
 
 module.exports = function(options) {
 
-  options = options || {};
-
-  // Main configurables
-
-  if (!options.id) {
-    console.warn('Please set `options.id` with application identifier.')
-  }
-
-  if (!options.port) {
-    console.warn('Specify `options.port`.');
-  }
-
-  if (!options.schema) {
-    console.warn('Specify `options.schema` (default is http).');
-    options.schema = 'http';
-  }
-
-  if (!options.domain) {
-    console.warn('Specify `options.domain`.');
-  }
-
-  options.origin = options.schema + '://' + options.domain;
-
-  if (!options.cdnDomain) {
-    console.warn('Specify `options.cdnDomain` for static serving.');
-    options.cdnDomain = options.domain;
-  }
-
-  options.cdnOrigin = '//' + options.cdnDomain;
-
-  if (!options.assetsPath) {
-    console.warn('Specify `options.assetsPath` for Bundle Up.');
-    options.assetsPath = './assets'
-  }
-
-  if (!options.redis) {
-    console.warn('Specify `options.redis` with Redis connection settings.')
-  }
-
-  if (!options.mongo) {
-    console.warn('Specify `options.mongo` with Mongo connection settings.')
-  }
-
-  // Express app
+  // BigFoot Express-based app
 
   var app = new Application(options);
 
@@ -138,28 +95,6 @@ module.exports = function(options) {
         .use(nib());
     }
   }));
-
-  // Assets bundle
-
-  app.configure('development', function() {
-    BundleUp(app, options.assetsPath, {
-      staticRoot: options.publicPath,
-      staticUrlRoot: '/',
-      bundle: false,
-      minifyCss: false,
-      minifyJs: false
-    });
-  });
-
-  app.configure('production', function() {
-    BundleUp(app, options.assetsPath, {
-      staticRoot: options.publicPath,
-      staticUrlRoot: '/' + options.cdnOrigin,
-      bundle: true,
-      minifyCss: true,
-      minifyJs: true
-    });
-  });
 
   // Public serving
 

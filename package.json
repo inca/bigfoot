@@ -29,7 +29,6 @@
     "flatmap": "*",
     "stylus": "*",
     "nib": "*",
-    "bundle-up": "*",
     "sprintf": "*",
     "connect-redis": "*",
     "underscore": "*",
