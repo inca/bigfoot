@@ -8,10 +8,6 @@ var debug = require('debug')('bigfoot:app')
 module.exports = function(conf) {
 
   this.conf = conf;
-  this.assets = {
-    js: {},
-    css: {}
-  };
 
   if (!conf.id) {
     console.warn('Please set `conf.id` with application identifier.')
@@ -63,6 +59,12 @@ module.exports = function(conf) {
 
   this.express = require('express')();
 
+  // Add assets generation stuff
+
+  this.generateAssets = function() {
+    require('./assets').compile(conf)
+  };
+
   // Proxy all its functions
 
   for (var i in this.express) {
@@ -70,6 +72,19 @@ module.exports = function(conf) {
     if (typeof(fn) == 'function') {
       this[i] = fn.bind(this.express);
     }
+  }
+
+  // Also parse some command line params
+
+  var argv = require('optimist').argv;
+
+  if (argv['compile-assets'] ||
+    argv['generate-assets'] ||
+    argv['create-assets'] ||
+    argv['make-assets']) {
+    if (process.env.NODE_ENV != 'production')
+      console.warn("Warning: non-production environment. Consider running with NODE_ENV=production");
+    this.generateAssets();
   }
 
 };

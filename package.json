@@ -38,7 +38,7 @@
     "stringex": "*",
     "async": "*",
     "mongoose": "*",
-    "uglify-js": "*"
+    "optimist": "*"
   },
   "devDependencies": {
     "mocha": "*",
