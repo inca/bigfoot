@@ -1,13 +1,13 @@
 'use strict';
 
-module.exports = function(options) {
+module.exports = function(conf) {
 
   var debug = require('debug')('bigfoot:auth');
 
-  var User = options.auth && options.auth.model;
+  var User = conf.auth && conf.auth.model;
 
   if (!User) {
-    console.error('Configure `options.auth.model` to your mongoose User model.');
+    console.error('Configure `conf.auth.model` to your mongoose User model.');
   }
 
   return function(req, res, next) {

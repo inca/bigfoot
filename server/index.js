@@ -9,23 +9,22 @@ var Application = require('./application')
   , commons = require('./commons')
   , mongooseAuth = require('./auth')
   , _ = require('underscore')
-  , i18n = require("i18n-2")
-  , BundleUp = require("bundle-up");
+  , i18n = require("i18n-2");
 
 // Default application skeleton
 
-module.exports = function(options) {
+module.exports = function(conf) {
 
   // BigFoot Express-based app
 
-  var app = new Application(options);
+  var app = new Application(conf);
 
   // Views
 
-  app.set('views', options.viewsPath || './views');
+  app.set('views', conf.viewsPath || './views');
   app.set('view engine', 'jade');
   app.engine('ejs', require('ejs').renderFile);
-  app.locals.basedir = options.viewsPath || './views';
+  app.locals.basedir = conf.viewsPath || './views';
 
   // Loggers
 
@@ -41,31 +40,31 @@ module.exports = function(options) {
   app.install('methodOverride', express.methodOverride());
 
   // Session with connect-redis
-  var secret = (options.session && options.session.secret) || '';
+  var secret = (conf.session && conf.session.secret) || '';
   var RedisStore = require('connect-redis')(express);
   var redisOptions = _.extend({
     prefix: 'session:',
-    ttl: (options.session && options.session.ttl) || 600
-  }, options.redis || {});
+    ttl: (conf.session && conf.session.ttl) || 600
+  }, conf.redis || {});
   app.install('cookie', express.cookieParser(secret));
   app.install('session', express.session({
     key: 'sid',
     secret: secret,
     store: new RedisStore(redisOptions),
     cookie: {
-      domain: options.session && options.session.domain
+      domain: conf.session && conf.session.domain
     }
   }));
 
   // Session-based authentication backed by Mongoose
 
-  app.install('auth', mongooseAuth(options));
+  app.install('auth', mongooseAuth(conf));
 
   // I18n
 
   app.install('i18n', function(req, res, next) {
     req.i18n = new i18n({
-      locales: options.locales || ['en'],
+      locales: conf.locales || ['en'],
       extension: '.json'
     });
     i18n.registerMethods(res.locals, req);
@@ -74,11 +73,11 @@ module.exports = function(options) {
 
   // Notices
 
-  app.install('notices', notices(options));
+  app.install('notices', notices(conf));
 
   // Routing commons
 
-  app.install('commons', commons(options));
+  app.install('commons', commons(conf));
 
   // Router
 
@@ -87,7 +86,7 @@ module.exports = function(options) {
   // Stylus
 
   app.install('stylus', stylus.middleware({
-    src: options.publicPath || './public',
+    src: conf.publicPath || './public',
     compile: function(str, path) {
       return stylus(str)
         .set('filename', path)
@@ -99,13 +98,13 @@ module.exports = function(options) {
   // Public serving
 
   app.install('public-cors', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', options.origin);
+    res.header('Access-Control-Allow-Origin', conf.origin);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
   });
 
-  app.install('public', express.static(options.publicPath));
+  app.install('public', express.static(conf.publicPath));
 
   // Error handler
 

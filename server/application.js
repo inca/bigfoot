@@ -4,129 +4,144 @@ var debug = require('debug')('bigfoot:app')
   , http = require('http')
   , mongoose = require('mongoose');
 
-module.exports = function(options) {
+module.exports = function(conf) {
 
-  this.options = options;
+  this.conf = conf;
 
-  options = options || {};
-
-  // Main configurables
-
-  if (!options.id) {
-    console.warn('Please set `options.id` with application identifier.')
+  if (!conf.id) {
+    console.warn('Please set `conf.id` with application identifier.')
   }
 
-  if (!options.port) {
-    console.warn('Specify `options.port`.');
+  if (!conf.port) {
+    console.warn('Specify `conf.port`.');
   }
 
-  if (!options.schema) {
-    console.warn('Specify `options.schema` (default is http).');
-    options.schema = 'http';
+  if (!conf.schema) {
+    console.warn('Specify `conf.schema` (default is http).');
+    conf.schema = 'http';
   }
 
-  if (!options.domain) {
-    console.warn('Specify `options.domain`.');
+  if (!conf.domain) {
+    console.warn('Specify `conf.domain`.');
   }
 
-  if (!options.publicPath) {
-    console.warn('Specify `options.publicPath` to point to your static assets.');
+  if (!conf.publicPath) {
+    console.warn('Specify `conf.publicPath` to point to your static assets.');
   }
 
-  options.origin = options.schema + '://' + options.domain;
+  conf.origin = conf.schema + '://' + conf.domain;
 
-  if (!options.cdnDomain) {
-    console.warn('Specify `options.cdnDomain` for static serving.');
-    options.cdnDomain = options.domain;
+  if (!conf.cdnDomain) {
+    console.warn('Specify `conf.cdnDomain` for static serving.');
+    conf.cdnDomain = conf.domain;
   }
 
-  options.cdnOrigin = '//' + options.cdnDomain;
+  conf.cdnOrigin = '//' + conf.cdnDomain;
 
-  if (!options.redis) {
-    console.warn('Specify `options.redis` with Redis connection settings.')
+  if (!conf.redis) {
+    console.warn('Specify `conf.redis` with Redis connection settings.')
   }
 
-  if (!options.mongo) {
-    console.warn('Specify `options.mongo` with Mongo connection settings.')
+  if (!conf.mongo) {
+    console.warn('Specify `conf.mongo` with Mongo connection settings.')
   }
 
-  // Create Express application
+  // Create an Express application
 
-  var app = require('express')();
+  this.express = require('express')();
 
-  // Install middleware management on top of it
+};
 
-  function __(name, fn) {
+module.exports.prototype = {
+
+  // Middleware management
+
+  __middleware: function (name, fn) {
     return { route: '', name: name, handle: fn };
-  }
+  },
 
-  app.getMiddlewareIndex = function(thatName) {
-    for (var i = 0; i < this.stack.length; i++) {
-      var h = this.stack[i];
+  getMiddlewareIndex: function(thatName) {
+    for (var i = 0; i < this.express.stack.length; i++) {
+      var h = this.express.stack[i];
       if ((h.name || h.handle.name) == thatName)
         break;
     }
     return i;
-  };
+  },
 
-  app.installLast = app.install = function(name, fn) {
+  installLast: function(name, fn) {
     debug('Installing “' + name + '” as the last one');
-    app.stack.push(__(name, fn));
-    return app;
-  };
+    this.express.stack.push(this.__middleware(name, fn));
+    return this;
+  },
 
-  app.installFirst = function(name, fn) {
+  install: this.installLast,
+
+  installFirst: function(name, fn) {
     debug('Installing “' + name + '” as the first one');
-    app.stack.unshift(__(name, fn));
-    return app;
-  };
+    this.express.stack.unshift(this.__middleware(name, fn));
+    return this;
+  },
 
-  app.installBefore = function(thatName, name, fn) {
+  installBefore: function(thatName, name, fn) {
     debug('Installing “' + name + '” before “' + thatName + '”');
     var i = this.getMiddlewareIndex(thatName);
-    this.stack.splice(i, 0, __(name, fn));
-    return app;
-  };
+    this.express.stack.splice(i, 0, this.__middleware(name, fn));
+    return this;
+  },
 
-  app.installAfter = function(thatName, name, fn) {
+  installAfter: function(thatName, name, fn) {
     debug('Installing “' + name + '” after “' + thatName + '”');
     var i = this.getMiddlewareIndex(thatName);
-    if (i == this.stack.length)
+    if (i == this.express.stack.length)
       this.installLast(name, fn);
     else
-      this.stack.splice(i + 1, 0, __(name, fn));
-    return app;
-  };
+      this.express.stack.splice(i + 1, 0, this.__middleware(name, fn));
+    return this;
+  },
 
-  app.replace = function(name, fn) {
+  replace: function(name, fn) {
     debug('Replacing “' + name + '”.');
     var i = this.getMiddlewareIndex(name);
-    if (i == this.stack.length)
+    if (i == this.express.stack.length)
       console.warn('Replacing “' + name + '” failed. Try installing instead.');
     else
-      this.stack.splice(i, 1, __(name, fn));
-    return app;
-  };
+      this.express.stack.splice(i, 1, __.__middleware(name, fn));
+    return this;
+  },
 
-  app.names = function() {
-    return this.stack.map(function(m) {
+  handlers: function() {
+    return this.express.stack.map(function(m) {
       return m.name || '<anonymous>';
     });
-  };
+  },
+
+  // Assets management
+
+  addJs: function(path, name) {
+    // Path is relative to `conf.publicPath`
+    // Name is optional
+  },
+
+  addCss: function(path, media, name) {
+
+  },
 
   // Add run stuff
 
-  app.run = function(cb) {
-    var server = this.server = http.createServer(app);
-    var port = options.port || process.ENV.port;
-    var appId = options.id + '@' + port;
+  run: function(cb) {
+    var conf = this.conf
+      , express = this.express
+      , server = this.server = http.createServer(express)
+      , port = conf.port || process.ENV.port
+      , appId = conf.id + '@' + port;
 
     // Graceful shutdown
 
     var shutdown = function() {
-      if (app.shuttingDown)
+      if (express.shuttingDown)
         return;
-      app.shuttingDown = true;
+      express.shuttingDown = true;
       console.log(appId + ': shutting down.');
       server.close(function() {
         mongoose.disconnect(function() {
@@ -139,20 +154,16 @@ module.exports = function(options) {
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
 
-    mongoose.connect(options.mongo.url, function() {
-      debug('Connected to Mongo @ ' + options.mongo.url);
+    mongoose.connect(conf.mongo.url, function() {
+      debug('Connected to Mongo @ ' + conf.mongo.url);
       server.listen(port, function() {
-        console.log(appId + ': visit ' + options.origin + ' to begin your work.');
+        console.log(appId + ': visit ' + conf.origin + ' to begin your work.');
         if (typeof(cb) == 'function')
           cb();
       });
     });
 
     return this;
-  };
-
-  // We're done in here
-
-  return app;
+  }
 
 };

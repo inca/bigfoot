@@ -7,7 +7,7 @@ var moment = require('moment')
   , _ = require('underscore')
   , debug = require('debug')('bigfoot:commons');
 
-module.exports = function(options) {
+module.exports = function(conf) {
 
   return function(req, res, next) {
 
@@ -123,8 +123,8 @@ module.exports = function(options) {
       },
 
       cdn: function(resource) {
-        var uri = options.cdnOrigin + resource;
-        var file = path.join(options.publicPath, resource);
+        var uri = conf.cdnOrigin + resource;
+        var file = path.join(conf.publicPath, resource);
         try {
           return uri + "?" + fs.statSync(file).mtime.getTime();
         } catch (e) {
@@ -137,7 +137,7 @@ module.exports = function(options) {
     // Copy main configurables to res.locals
 
     ['schema', 'domain', 'origin', 'cdnDomain', 'cdnOrigin'].forEach(function(k) {
-      res.locals[k] = options[k];
+      res.locals[k] = conf[k];
     });
 
     next();

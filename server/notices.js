@@ -3,7 +3,7 @@
 var vsprintf = require("sprintf").vsprintf
   , _ = require('underscore');
 
-module.exports = function(options) {
+module.exports = function(conf) {
 
   return function(req, res, next) {
 
@@ -61,9 +61,9 @@ module.exports = function(options) {
 
     };
 
-    // Allow extending through options
+    // Allow extending through conf
 
-    _.extend(notices, options.notices || {});
+    _.extend(notices, conf.notices || {});
 
     next();
   }
