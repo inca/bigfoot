@@ -2,7 +2,8 @@
 
 var debug = require('debug')('bigfoot:app')
   , http = require('http')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , _ = require('underscore');
 
 module.exports = function(conf) {
 
@@ -25,10 +26,6 @@ module.exports = function(conf) {
     console.warn('Specify `conf.domain`.');
   }
 
-  if (!conf.publicPath) {
-    console.warn('Specify `conf.publicPath` to point to your static assets.');
-  }
-
   conf.origin = conf.schema + '://' + conf.domain;
 
   if (!conf.cdnDomain) {
@@ -37,6 +34,14 @@ module.exports = function(conf) {
   }
 
   conf.cdnOrigin = '//' + conf.cdnDomain;
+
+  if (!conf.publicPath) {
+    console.warn('Specify `conf.publicPath` to point to your static assets.');
+  }
+
+  if (!conf.viewsPath) {
+    console.warn('Specify `conf.viewsPath` to point to your views.');
+  }
 
   if (!conf.redis) {
     console.warn('Specify `conf.redis` with Redis connection settings.')
@@ -49,6 +54,15 @@ module.exports = function(conf) {
   // Create an Express application
 
   this.express = require('express')();
+
+  // Proxy all its functions
+
+  for (var i in this.express) {
+    var fn = this.express[i];
+    if (typeof(fn) == 'function') {
+      this[i] = fn.bind(this.express);
+    }
+  }
 
 };
 
@@ -75,7 +89,9 @@ module.exports.prototype = {
     return this;
   },
 
-  install: this.installLast,
+  install: function(name, fn) {
+    return this.installLast(name, fn);
+  },
 
   installFirst: function(name, fn) {
     debug('Installing “' + name + '” as the first one');

@@ -24,7 +24,7 @@ module.exports = function(conf) {
   app.set('views', conf.viewsPath || './views');
   app.set('view engine', 'jade');
   app.engine('ejs', require('ejs').renderFile);
-  app.locals.basedir = conf.viewsPath || './views';
+  app.express.locals.basedir = conf.viewsPath || './views';
 
   // Loggers
 
