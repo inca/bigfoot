@@ -81,7 +81,9 @@ module.exports = function(conf) {
   if (argv['compile-assets'] ||
     argv['generate-assets'] ||
     argv['create-assets'] ||
-    argv['make-assets']) {
+    argv['make-assets'] ||
+    argv['ca'] ||
+    argv['ga']) {
     if (process.env.NODE_ENV != 'production')
       console.warn("Warning: non-production environment. Consider running with NODE_ENV=production");
     this.generateAssets();
