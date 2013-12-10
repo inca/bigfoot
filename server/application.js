@@ -8,6 +8,10 @@ var debug = require('debug')('bigfoot:app')
 module.exports = function(conf) {
 
   this.conf = conf;
+  this.assets = {
+    js: {},
+    css: {}
+  };
 
   if (!conf.id) {
     console.warn('Please set `conf.id` with application identifier.')
@@ -41,6 +45,10 @@ module.exports = function(conf) {
 
   if (!conf.viewsPath) {
     console.warn('Specify `conf.viewsPath` to point to your views.');
+  }
+
+  if (!conf.assets) {
+    console.warn('Configure `conf.assets` with your CSS and JS files.');
   }
 
   if (!conf.redis) {
@@ -130,17 +138,6 @@ module.exports.prototype = {
     return this.express.stack.map(function(m) {
       return m.name || '<anonymous>';
     });
-  },
-
-  // Assets management
-
-  addJs: function(path, name) {
-    // Path is relative to `conf.publicPath`
-    // Name is optional
-  },
-
-  addCss: function(path, media, name) {
-
   },
 
   // Add run stuff

@@ -5,6 +5,7 @@ var Application = require('./application')
   , stylus = require('stylus')
   , nib = require('nib')
   , multipart = require('./multipart')
+  , assets = require('./assets')
   , notices = require('./notices')
   , commons = require('./commons')
   , mongooseAuth = require('./auth')
@@ -75,6 +76,10 @@ module.exports = function(conf) {
 
   app.install('notices', notices(conf));
 
+  // Assets emitters
+
+  app.install('assets', assets(conf));
+
   // Routing commons
 
   app.install('commons', commons(conf));
@@ -126,13 +131,10 @@ module.exports = function(conf) {
 // Common middleware
 
 exports.Application = Application;
-
 exports.multipart = multipart;
-
+exports.assets = assets;
 exports.notices = notices;
-
 exports.commons = commons;
-
 exports.mongooseAuth = mongooseAuth;
 
 
