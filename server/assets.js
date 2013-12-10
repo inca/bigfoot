@@ -1,49 +1,57 @@
 'use strict';
 
-var debug = require('debug')('bigfoot:assets')
-  , path = require('path')
+var path = require('path')
   , fs = require('fs');
 
 module.exports = function(conf) {
 
-  var packaging = process.env.NODE_ENV == 'production';
-  var markup = {};
+  var assetsJson = path.join(conf.publicPath, 'assets.json')
+    , assetsCache = {};
 
-  function compileHtml(bundleName) {
-    var tags = markup[bundleName] = {
+  function init() {
+    if (process.env.NODE_ENV == 'production')
+      try {
+        assetsCache = JSON.parse(
+          fs.readFileSync(assetsJson, { encoding: 'utf-8' }));
+        return;
+      } catch(e) {
+        console.warn(assetsJson + " missing or broken.");
+      }
+    // Fallback to default multi-files markup
+    initDev();
+  }
+
+  function initDev() {
+    for (var bundleName in conf.assets)
+      compileDev(bundleName);
+  }
+
+  function compileDev(bundleName) {
+    var tags = assetsCache[bundleName] = {
       js: '',
       css: ''
     };
-    if (packaging) {
-      // TODO read bundle fingerprints
-    } else {
-      conf.assets[bundleName].forEach(function(asset) {
-        if (/\.js$/i.test(asset)) {
-          tags.js +=
-            '<script type="text/javascript" src="' +
-              asset + '"></script>';
-        } else if (/\.css/i.test(asset)) {
-          tags.css +=
-            '<link rel="stylesheet" type="text/css" href="' +
-              asset + '"/>';
-        }
-      });
-    }
+    conf.assets[bundleName].forEach(function(asset) {
+      if (/\.js$/i.test(asset)) {
+        tags.js +=
+          '<script type="text/javascript" src="' +
+            asset + '"></script>';
+      } else if (/\.css/i.test(asset)) {
+        tags.css +=
+          '<link rel="stylesheet" type="text/css" href="' +
+            asset + '"/>';
+      }
+    });
   }
 
-  for (var bundleName in conf.assets)
-    compileHtml(bundleName);
-
-  process.on('SIGHUP', function() {
-    console.log('Updating assets bundles information.');
-  });
+  init();
 
   return function(req, res, next) {
     res.locals.emitJs = function(bundleName) {
-      return markup[bundleName].js;
+      return assetsCache[bundleName].js;
     };
     res.locals.emitCss = function(bundleName) {
-      return markup[bundleName].css;
+      return assetsCache[bundleName].css;
     };
     next();
   };
