@@ -7,6 +7,9 @@ var moment = require('moment')
   , _ = require('underscore')
   , debug = require('debug')('bigfoot:commons');
 
+// Hack, undefine moment defined globally
+delete global.moment;
+
 module.exports = function(conf) {
 
   return function(req, res, next) {
@@ -115,11 +118,11 @@ module.exports = function(conf) {
       xhr: req.xhr,
 
       moment: function() {
-        return moment.apply(arguments).lang(req.i18n.getLocale());
+        return moment.apply(moment, arguments).lang(req.i18n.getLocale());
       },
 
       duration: function() {
-        return moment.duration.apply(arguments).lang(req.i18n.getLocale());
+        return moment.duration.apply(moment, arguments).lang(req.i18n.getLocale());
       },
 
       cdn: function(resource) {
