@@ -1,7 +1,9 @@
 $.bigfoot.switcher = {
 
-  hideAll: function() {
-    $(".switch-target").hide();
+  hideAll: function(currentTarget) {
+    $(".switch-target").filter(function(){
+      return this != currentTarget;
+    }).hide();
     $("[data-switch]").each(function() {
       var e = $(this);
       var cssClass = e.attr("data-switch-class");
@@ -62,7 +64,9 @@ $.bigfoot.install('[data-switch]', function() {
           }
         });
       }
-    } else switcher.removeClass(cssClass);
+    } else {
+      switcher.removeClass(cssClass);
+    }
   }
 
   update();
@@ -73,7 +77,7 @@ $.bigfoot.install('[data-switch]', function() {
   }
 
   switcher.bind("click.bigfoot.switch", function() {
-    $.bigfoot.switcher.hideAll();
+    $.bigfoot.switcher.hideAll(target[0]);
     toggle();
     return false;
   });
