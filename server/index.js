@@ -14,7 +14,7 @@ var Application = require('./application')
 
 // Default application skeleton
 
-module.exports = function(conf) {
+module.exports = exports = function(conf) {
 
   // BigFoot Express-based app
 
