@@ -12,7 +12,7 @@ if (useHistory) {
       // `viewportId` from `state` must match #viewport(data-viewport-id)
       var viewportId = ev.state.id;
       if (viewportId && viewportId == $.bigfoot.viewport.id()) {
-        load(location.href);
+        $.bigfoot.viewport.load(location.href);
       } else {
         // reload whole page
         location.reload(true);
