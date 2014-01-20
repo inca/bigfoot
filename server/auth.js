@@ -5,13 +5,13 @@ module.exports = function(app) {
   var debug = require('debug')('bigfoot:auth')
     , conf = app.conf;
 
-  var User = conf.auth && conf.auth.model;
-
-  if (!User) {
-    console.error('Configure `conf.auth.model` to your mongoose User model.');
-  }
-
   return function(req, res, next) {
+
+    var User = conf.auth && conf.auth.model;
+
+    if (!User) {
+      console.error('Configure `conf.auth.model` to your mongoose User model.');
+    }
 
     req.login = function(user, cb) {
       req.session.principalId = user.id.toString();

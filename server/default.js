@@ -59,7 +59,7 @@ module.exports = exports = function(conf) {
 
   // Session-based authentication backed by Mongoose
 
-  app.install('auth', mongooseAuth(conf));
+  app.install('auth', mongooseAuth(app));
 
   // I18n
 
@@ -74,15 +74,15 @@ module.exports = exports = function(conf) {
 
   // Notices
 
-  app.install('notices', notices(conf));
+  app.install('notices', notices(app));
 
   // Assets emitters
 
-  app.install('assets', assets(conf));
+  app.install('assets', assets(app));
 
   // Routing commons
 
-  app.install('commons', commons(conf));
+  app.install('commons', commons(app));
 
   // Router
 
