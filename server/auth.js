@@ -1,8 +1,9 @@
 'use strict';
 
-module.exports = function(conf) {
+module.exports = function(app) {
 
-  var debug = require('debug')('bigfoot:auth');
+  var debug = require('debug')('bigfoot:auth')
+    , conf = app.conf;
 
   var User = conf.auth && conf.auth.model;
 

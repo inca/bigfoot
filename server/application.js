@@ -26,14 +26,14 @@ module.exports = function(conf) {
     console.warn('Specify `conf.domain`.');
   }
 
-  conf.origin = conf.schema + '://' + conf.domain;
+  this.origin = conf.schema + '://' + conf.domain;
 
   if (!conf.cdnDomain) {
     console.warn('Specify `conf.cdnDomain` for static serving.');
     conf.cdnDomain = conf.domain;
   }
 
-  conf.cdnOrigin = '//' + conf.cdnDomain;
+  this.cdnOrigin = '//' + conf.cdnDomain;
 
   if (!conf.publicPath) {
     console.warn('Specify `conf.publicPath` to point to your static assets.');
@@ -160,7 +160,8 @@ module.exports.prototype = {
   // Add run stuff
 
   run: function(cb) {
-    var conf = this.conf
+    var app = this
+      , conf = app.conf
       , express = this.express
       , server = this.server = http.createServer(express)
       , port = conf.port || process.ENV.port
@@ -187,7 +188,7 @@ module.exports.prototype = {
     mongoose.connect(conf.mongo.url, function() {
       debug('Connected to Mongo @ ' + conf.mongo.url);
       server.listen(port, function() {
-        console.log(appId + ': visit ' + conf.origin + ' to begin your work.');
+        console.log(appId + ': visit ' + app.origin + ' to begin your work.');
         if (typeof(cb) == 'function')
           cb();
       });

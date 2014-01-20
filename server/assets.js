@@ -5,9 +5,10 @@ var path = require('path')
   , crypto = require('crypto')
   , mkdirp = require('mkdirp');
 
-module.exports = function(conf) {
+module.exports = function(app) {
 
-  var assetsJson = path.join(conf.publicPath, 'assets.json')
+  var conf = app.conf
+    , assetsJson = path.join(conf.publicPath, 'assets.json')
     , assetsCache = {};
 
   function init() {
@@ -56,9 +57,10 @@ module.exports = function(conf) {
 
 };
 
-module.exports.compile = function(conf) {
+module.exports.compile = function(app) {
 
-  var assetsJson = path.join(conf.publicPath, 'assets.json')
+  var conf = app.conf
+    , assetsJson = path.join(conf.publicPath, 'assets.json')
     , assetsCache = {};
 
   function md5(str) {
@@ -106,9 +108,9 @@ module.exports.compile = function(conf) {
     // Write HMTL tags
     assetsCache[bundleName] = {
       js: '<script type="text/javascript" src="' +
-        conf.cdnOrigin + '/' + jsFile + '"></script>',
+        app.cdnOrigin + '/' + jsFile + '"></script>',
       css: '<link rel="stylesheet" type="text/css" href="' +
-        conf.cdnOrigin + '/' + cssFile + '"/>'
+        app.cdnOrigin + '/' + cssFile + '"/>'
     }
   }
 

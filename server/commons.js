@@ -10,7 +10,9 @@ var moment = require('moment')
 // Hack, undefine moment defined globally
 delete global.moment;
 
-module.exports = function(conf) {
+module.exports = function(app) {
+
+  var conf = app.conf;
 
   return function(req, res, next) {
 
@@ -126,7 +128,7 @@ module.exports = function(conf) {
       },
 
       cdn: function(resource) {
-        var uri = conf.cdnOrigin + resource;
+        var uri = app.cdnOrigin + resource;
         var file = path.join(conf.publicPath, resource);
         try {
           return uri + "?" + fs.statSync(file).mtime.getTime();
@@ -139,8 +141,12 @@ module.exports = function(conf) {
 
     // Copy main configurables to res.locals
 
-    ['schema', 'domain', 'origin', 'cdnDomain', 'cdnOrigin'].forEach(function(k) {
+    ['schema', 'domain', 'cdnDomain'].forEach(function(k) {
       res.locals[k] = conf[k];
+    });
+
+    ['origin', 'cdnOrigin'].forEach(function(k) {
+      res.locals[k] = app[k];
     });
 
     next();

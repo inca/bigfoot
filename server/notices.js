@@ -3,13 +3,15 @@
 var vsprintf = require("sprintf").vsprintf
   , _ = require('underscore');
 
-module.exports = function(conf) {
+module.exports = function(app) {
+
+  var conf = app.conf;
 
   return function(req, res, next) {
 
     var notices = res.notices = res.locals.notices = {
 
-      get: function() {
+      purge: function() {
         var all = req.session.notices;
         if (!all)
           all = [];
@@ -55,7 +57,15 @@ module.exports = function(conf) {
       },
 
       send: function() {
-        res.json({ notices: notices.get() });
+        res.json({ notices: notices.purge() });
+        return notices;
+      },
+
+      redirect: function(url) {
+        res.json({
+          notices: notices.purge(),
+          redirect: url
+        });
         return notices;
       }
 
@@ -63,7 +73,7 @@ module.exports = function(conf) {
 
     // Allow extending through conf
 
-    _.extend(notices, conf.notices || {});
+    _.extend(notices, conf.notices);
 
     next();
   }
