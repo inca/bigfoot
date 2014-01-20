@@ -103,7 +103,7 @@ module.exports = exports = function(conf) {
   // Public serving
 
   app.install('public-cors', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', conf.origin);
+    res.header('Access-Control-Allow-Origin', app.origin);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
