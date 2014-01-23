@@ -62,10 +62,12 @@ module.exports = function(app) {
       },
 
       redirect: function(url) {
-        res.json({
-          notices: notices.purge(),
-          redirect: url
-        });
+        if (req.xhr)
+          res.json({
+            notices: notices.purge(),
+            redirect: url
+          });
+        else res.redirect(url);
         return notices;
       }
 
