@@ -94,10 +94,11 @@ $.bigfoot.viewport = {
         $("a[rel='partial']").removeClass("active");
         // Initialize the container
         $.bigfoot.init(cnt);
-        // See if site title needs to be replaced
-        var newTitle = cnt.attr("data-title");
-        if (newTitle) {
-          $("head title").text(newTitle);
+        // See if there's a title tag inside — and replace the title
+        var newTitle = $('title', cnt);
+        if (newTitle.size() > 0) {
+          $("head title").text(newTitle.text());
+          newTitle.remove();
         }
         // Raise the event
         $("body").trigger("viewportLoad");
