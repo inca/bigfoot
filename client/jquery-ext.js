@@ -58,7 +58,7 @@ $.fn.scrollTo = function() {
   if (scrollTop >= 0)
     $("html, body").animate({
       "scrollTop": scrollTop
-    }, 200);
+    }, 250);
 };
 
 // Shuffle elements
@@ -83,5 +83,51 @@ $.fn.shuffle = function() {
   });
 
   return $(shuffled);
+
+};
+
+// Events on scroll stop
+
+$.fn.scrollStop = function(cb) {
+  var timer;
+  $(this).unbind('.scrollStop')
+    .bind('scroll.scrollStop', function(ev) {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        cb(ev);
+      }, 250);
+    });
+};
+
+// Events on resize stop
+
+$.fn.resizeStop = function(cb) {
+  var timer;
+  $(this).unbind('.resizeStop')
+    .bind('resize.resizeStop', function(ev) {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        cb(ev);
+      }, 250);
+    });
+};
+
+// Events on becoming visible after scroll
+
+$.fn.becomeVisible = function(cb) {
+  var elem = $(this)
+    , wnd = $(window)
+    , timer;
+  $(window).bind('scroll.scrollStop', function(ev) {
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      var elemTop = elem.offset().top;
+      var viewBottom = wnd.scrollTop() + wnd.height();
+      if (elemTop < viewBottom) {
+        $(window).unbind(ev);
+        cb(ev);
+      }
+    }, 250);
+  });
 
 };
