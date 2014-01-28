@@ -1,12 +1,7 @@
 $.bigfoot.install('[data-load]', function() {
 
-  var block = $(this);
-
-  $(this).becomeVisible(loadInViewport);
-
-  $(loadInViewport); // Bind on jQuery ready
-
-  function loadInViewport() {
+  $(this).becomeVisible(function(ev) {
+    var block = $(this);
     var url = block.attr("data-load");
     var tagName = block[0].tagName.toLowerCase();
     var elemName = "<" + tagName + "></" + tagName + ">";
@@ -34,6 +29,6 @@ $.bigfoot.install('[data-load]', function() {
         ph.remove();
       }
     });
-  }
+  });
 
 });

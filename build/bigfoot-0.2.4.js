@@ -536,13 +536,8 @@ $.bigfoot.install('img.retina', function() {
 },{}],10:[function(require,module,exports){
 $.bigfoot.install('[data-load]', function() {
 
-  var block = $(this);
-
-  $(this).becomeVisible(loadInViewport);
-
-  $(loadInViewport); // Bind on jQuery ready
-
-  function loadInViewport() {
+  $(this).becomeVisible(function(ev) {
+    var block = $(this);
     var url = block.attr("data-load");
     var tagName = block[0].tagName.toLowerCase();
     var elemName = "<" + tagName + "></" + tagName + ">";
@@ -570,7 +565,7 @@ $.bigfoot.install('[data-load]', function() {
         ph.remove();
       }
     });
-  }
+  });
 
 });
 
@@ -941,7 +936,7 @@ $.fn.scrollTo = function() {
   if (scrollTop >= 0)
     $("html, body").animate({
       "scrollTop": scrollTop
-    }, 250);
+    }, 300);
 };
 
 // Shuffle elements
@@ -975,10 +970,11 @@ $.fn.scrollStop = function(cb) {
   var timer;
   $(this).unbind('.scrollStop')
     .bind('scroll.scrollStop', function(ev) {
+      var elem = this;
       clearTimeout(timer);
       timer = setTimeout(function() {
-        cb(ev);
-      }, 250);
+        cb.call(elem, ev);
+      }, 150);
     });
 };
 
@@ -988,31 +984,36 @@ $.fn.resizeStop = function(cb) {
   var timer;
   $(this).unbind('.resizeStop')
     .bind('resize.resizeStop', function(ev) {
+      var elem = this;
       clearTimeout(timer);
       timer = setTimeout(function() {
-        cb(ev);
-      }, 250);
+        cb.call(elem, ev);
+      }, 150);
     });
 };
 
 // Events on becoming visible after scroll
 
 $.fn.becomeVisible = function(cb) {
-  var elem = $(this)
-    , wnd = $(window)
-    , timer;
-  $(window).bind('scroll.scrollStop', function(ev) {
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      var elemTop = elem.offset().top;
-      var viewBottom = wnd.scrollTop() + wnd.height();
-      if (elemTop < viewBottom) {
-        $(window).unbind(ev);
-        cb(ev);
-      }
-    }, 250);
+  $(this).each(function() {
+    var elem = $(this)
+      , wnd = $(window)
+      , timer;
+    var handler = function(ev) {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        var elemTop = elem.offset().top;
+        var viewBottom = wnd.scrollTop() + wnd.height();
+        if (elemTop < viewBottom) {
+          wnd.unbind(ev);
+          cb.call(elem[0], ev);
+        }
+      }, 150);
+    };
+    // Bind events to scroll and domready events
+    wnd.bind('scroll.scrollStop', handler);
+    $(handler);
   });
-
 };
 
 },{}],16:[function(require,module,exports){
