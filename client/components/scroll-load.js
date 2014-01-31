@@ -1,8 +1,22 @@
 $.bigfoot.install('[data-load]', function() {
 
-  $(this).becomeVisible(function(ev) {
-    var block = $(this);
-    var url = block.attr("data-load");
+  var block = $(this)
+    , wnd = $(window)
+    , url = block.attr("data-load")
+    , eventKey = 'scroll.bigfoot.scrollLoad-' + $.sha256(url)
+    , timer;
+
+  function checkAndLoad() {
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      var viewBottom = wnd.scrollTop() + wnd.height();
+      if (block.offset().top < viewBottom)
+        load();
+    }, 100);
+  }
+
+  function load() {
+    wnd.unbind(eventKey);
     var tagName = block[0].tagName.toLowerCase();
     var elemName = "<" + tagName + "></" + tagName + ">";
     var ph = $.bigfoot.placeholder();
@@ -29,6 +43,12 @@ $.bigfoot.install('[data-load]', function() {
         ph.remove();
       }
     });
-  });
+  }
+
+  // Bind on window scroll
+  wnd.unbind(eventKey).bind(eventKey, checkAndLoad);
+
+  $(checkAndLoad);  // And on DOM ready
+
 
 });

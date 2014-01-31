@@ -90,50 +90,24 @@ $.fn.shuffle = function() {
 
 $.fn.scrollStop = function(cb) {
   var timer;
-  $(this).unbind('.scrollStop')
-    .bind('scroll.scrollStop', function(ev) {
-      var elem = this;
-      clearTimeout(timer);
-      timer = setTimeout(function() {
-        cb.call(elem, ev);
-      }, 150);
-    });
+  $(this).bind('scroll.scrollStop', function(ev) {
+    var elem = this;
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      cb.call(elem, ev);
+    }, 100);
+  });
 };
 
 // Events on resize stop
 
 $.fn.resizeStop = function(cb) {
   var timer;
-  $(this).unbind('.resizeStop')
-    .bind('resize.resizeStop', function(ev) {
-      var elem = this;
-      clearTimeout(timer);
-      timer = setTimeout(function() {
-        cb.call(elem, ev);
-      }, 150);
-    });
-};
-
-// Events on becoming visible after scroll
-
-$.fn.becomeVisible = function(cb) {
-  $(this).each(function() {
-    var elem = $(this)
-      , wnd = $(window)
-      , timer;
-    var handler = function(ev) {
-      clearTimeout(timer);
-      timer = setTimeout(function() {
-        var elemTop = elem.offset().top;
-        var viewBottom = wnd.scrollTop() + wnd.height();
-        if (elemTop < viewBottom) {
-          wnd.unbind(ev);
-          cb.call(elem[0], ev);
-        }
-      }, 150);
-    };
-    // Bind events to scroll and domready events
-    wnd.bind('scroll.scrollStop', handler);
-    $(handler);
+  $(this).bind('resize.resizeStop', function(ev) {
+    var elem = this;
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      cb.call(elem, ev);
+    }, 100);
   });
 };
