@@ -50,7 +50,8 @@ module.exports = exports = function(conf) {
     }
   };
   if (!conf.redis) {
-    console.warn('Specify `conf.redis` with Redis connection settings for sessions.')
+    console.warn('Specify `conf.redis` with Redis connection settings for sessions.');
+  } else {
     var RedisStore = require('connect-redis')(express);
     var redisOptions = _.extend({
       prefix: 'session:',
