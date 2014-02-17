@@ -1,6 +1,6 @@
 {
   "name": "bigfoot",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Client-server Application Framework",
   "main": "server/index.js",
   "repository": {
@@ -38,7 +38,8 @@
     "stringex": "*",
     "async": "*",
     "mongoose": "*",
-    "optimist": "*"
+    "optimist": "*",
+    "mkdirp": "*"
   },
   "devDependencies": {
     "mocha": "*",
