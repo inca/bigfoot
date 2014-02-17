@@ -40,22 +40,26 @@ module.exports = exports = function(conf) {
   app.install('multipart', multipart());
   app.install('methodOverride', express.methodOverride());
 
-  // Session with connect-redis
+  // Session with connect-redis or in-memory
   var secret = (conf.session && conf.session.secret) || '';
-  var RedisStore = require('connect-redis')(express);
-  var redisOptions = _.extend({
-    prefix: 'session:',
-    ttl: (conf.session && conf.session.ttl) || 600
-  }, conf.redis || {});
-  app.install('cookie', express.cookieParser(secret));
-  app.install('session', express.session({
+  var sessionConf = {
     key: 'sid',
     secret: secret,
-    store: new RedisStore(redisOptions),
     cookie: {
       domain: conf.session && conf.session.domain
     }
-  }));
+  };
+  if (!conf.redis) {
+    console.warn('Specify `conf.redis` with Redis connection settings for sessions.')
+    var RedisStore = require('connect-redis')(express);
+    var redisOptions = _.extend({
+      prefix: 'session:',
+      ttl: (conf.session && conf.session.ttl) || 600
+    }, conf.redis || {});
+    sessionConf.store = new RedisStore(redisOptions);
+  }
+  app.install('cookie', express.cookieParser(secret));
+  app.install('session', express.session(sessionConf));
 
   // Session-based authentication backed by Mongoose
 

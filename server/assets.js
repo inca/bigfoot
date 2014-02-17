@@ -45,6 +45,11 @@ module.exports = function(app) {
 
   init();
 
+  // Ensure assets conf
+  if (!conf.assets) {
+    console.warn('Configure `conf.assets` with your CSS and JS files.');
+  }
+
   return function(req, res, next) {
     res.locals.emitJs = function(bundleName) {
       return assetsCache[bundleName].js;

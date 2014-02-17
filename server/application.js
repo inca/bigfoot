@@ -43,18 +43,6 @@ module.exports = function(conf) {
     console.warn('Specify `conf.viewsPath` to point to your views.');
   }
 
-  if (!conf.assets) {
-    console.warn('Configure `conf.assets` with your CSS and JS files.');
-  }
-
-  if (!conf.redis) {
-    console.warn('Specify `conf.redis` with Redis connection settings.')
-  }
-
-  if (!conf.mongo) {
-    console.warn('Specify `conf.mongo` with Mongo connection settings.')
-  }
-
   // Create an Express application
 
   this.express = require('express')();
@@ -164,13 +152,14 @@ module.exports.prototype = {
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
 
-    mongoose.connect(conf.mongo.url, function() {
-      debug('Connected to Mongo @ ' + conf.mongo.url);
-      server.listen(port, function() {
-        console.log(appId + ': visit ' + app.origin + ' to begin your work.');
-        if (typeof(cb) == 'function')
-          cb();
-      });
+    server.listen(port, function() {
+      console.log(appId + ': visit ' + app.origin + ' to begin your work.');
+      if (app.useMongo)
+        mongoose.connect(conf.mongo.url, function() {
+          debug('Connected to Mongo @ ' + conf.mongo.url);
+        });
+      if (typeof(cb) == 'function')
+        cb();
     });
 
     return this;
