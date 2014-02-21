@@ -101,6 +101,7 @@ module.exports = exports = function(conf) {
       return stylus(str)
         .set('filename', path)
         .set('compress', true)
+        .set('include css', true)
         .use(nib());
     }
   }));
