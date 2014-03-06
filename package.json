@@ -47,7 +47,6 @@
     "grunt-browserify": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*",
-    "grunt-contrib-jade": "*",
     "rho": "*"
   }
 }
