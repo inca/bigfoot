@@ -1,6 +1,6 @@
 {
   "name": "bigfoot",
-  "version": "0.2.10",
+  "version": "1.0.0",
   "description": "Client-server Application Framework",
   "main": "server/index.js",
   "repository": {
@@ -23,7 +23,7 @@
     "url": "https://github.com/inca/bigfoot/issues"
   },
   "dependencies": {
-    "express": "3.x",
+    "express": "*",
     "moment": "*",
     "multiparty": "*",
     "flatmap": "*",
