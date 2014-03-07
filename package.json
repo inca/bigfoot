@@ -37,7 +37,6 @@
     "debug": "*",
     "stringex": "*",
     "async": "*",
-    "mongoose": "*",
     "optimist": "*",
     "mkdirp": "*"
   },

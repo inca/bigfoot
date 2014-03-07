@@ -1,9 +1,14 @@
 'use strict';
 
-module.exports = function(app) {
+/**
+ * Request authentication middleware.
+ *
+ * @param conf
+ * @returns {Function}
+ */
+module.exports = function(conf) {
 
-  var debug = require('debug')('bigfoot:auth')
-    , conf = app.conf;
+  var debug = require('debug')('bigfoot:auth');
 
   var User = conf.auth && conf.auth.model;
 
