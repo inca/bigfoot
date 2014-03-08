@@ -41,7 +41,7 @@ describe('Configuration API', function() {
     assert.equal(conf.port, 4321);
   });
 
-  it('development object is ignored with NODE_ENV=production', function() {
+  it('should ignore development object with NODE_ENV=production', function() {
     process.env.NODE_ENV = 'production';
     var conf = new Conf({
       port: 1234,
@@ -53,7 +53,7 @@ describe('Configuration API', function() {
     delete process.env.NODE_ENV;
   });
 
-  it('compose origin from protocol and domain', function() {
+  it('should compose origin from protocol and domain', function() {
     // The defaults are `http://127.0.0.1`
     var conf = new Conf();
     assert.equal(conf.origin, 'http://127.0.0.1');
@@ -63,6 +63,27 @@ describe('Configuration API', function() {
       domain: 'myapp.com'
     });
     assert.equal(conf.origin, 'https://myapp.com');
+  });
+
+  it('should compose static origin from provided options', function() {
+    // The defaults are `//127.0.0.1`
+    var conf = new Conf();
+    assert.equal(conf.staticOrigin, '//127.0.0.1');
+    // `domain` is used if `staticDomain` is not overridden
+    conf = new Conf({ domain: 'myapp.com'});
+    assert.equal(conf.staticOrigin, '//myapp.com');
+    // `staticDomain` overrides `domain`
+    conf = new Conf({ domain: 'myapp.com', staticDomain: 'static.myapp' });
+    assert.equal(conf.staticOrigin, '//static.myapp');
+    // finally, development conf overrides production
+    conf = new Conf({
+      domain: 'myapp.com',
+      staticDomain: 'static.myapp',
+      development: {
+        staticDomain: 'static.myapp.dev'
+      }
+    });
+    assert.equal(conf.staticOrigin, '//static.myapp.dev');
   });
 
 });
