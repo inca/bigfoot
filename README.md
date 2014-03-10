@@ -1,4 +1,4 @@
-# Bigboot — Client-server Application Framework
+# Bigboot — Client-side Application Framework
 
 This is the internal project of EduArea LLC.
 
