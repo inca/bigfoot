@@ -14,14 +14,18 @@ function withEnv(env, cb) {
   }
 }
 
+function withProduction(cb) {
+  return withEnv({ NODE_ENV: 'production' }, cb);
+}
+
 describe('Configuration API', function() {
 
   it('should detect production environment', function() {
     var conf = new Conf();
     assert.equal(conf.production, false);
-    process.env.NODE_ENV = 'production';
-    assert.equal(conf.production, true);
-    delete process.env.NODE_ENV;
+    withProduction(function() {
+      assert.equal(conf.production, true);
+    });
   });
 
   it('should return default port with no options passed', function() {
@@ -35,10 +39,10 @@ describe('Configuration API', function() {
   });
 
   it('should override port with env variables', function() {
-    process.env.PORT = 4321;
-    var conf = new Conf({ port: 1234 });
-    assert.equal(conf.port, 4321);
-    delete process.env.PORT;
+    withEnv({ PORT: 4321 }, function() {
+      var conf = new Conf({ port: 1234 });
+      assert.equal(conf.port, 4321);
+    });
   });
 
   it('should override properties via the development object', function() {
@@ -95,5 +99,19 @@ describe('Configuration API', function() {
     });
     assert.equal(conf.staticOrigin, '//static.myapp.dev');
   });
+
+  it('should override key-wise values in development/production', function() {
+    var conf = new Conf({
+      port: {
+        development: 2222,
+        production: 3333
+      }
+    });
+    assert.equal(conf.port, 2222);
+    withProduction(function() {
+      assert.equal(conf.port, 3333);
+    });
+  });
+
 
 });
