@@ -4,6 +4,16 @@ var assert = require('assert');
 
 var Conf = require('../lib/conf.js');
 
+function withEnv(env, cb) {
+  for (var key in env) {
+    process.env[key] = env[key];
+  }
+  cb();
+  for (var key in env) {
+    delete process.env[key];
+  }
+}
+
 describe('Configuration API', function() {
 
   it('should detect production environment', function() {
