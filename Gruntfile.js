@@ -17,6 +17,10 @@ module.exports = function(grunt) {
       noinit: {
         src: ['client/bundle-noinit.js'],
         dest: 'build/bigfoot-noinit-<%=pkg.version%>.js'
+      },
+      amd: {
+        src: ['client/bundle-amd.js'],
+        dest: 'build/bigfoot-amd-<%=pkg.version%>.js'
       }
     },
 
@@ -31,6 +35,10 @@ module.exports = function(grunt) {
       noinit: {
         src: 'build/bigfoot-noinit-<%=pkg.version%>.js',
         dest: 'build/bigfoot-noinit-<%=pkg.version%>.min.js'
+      },
+      amd: {
+        src: 'build/bigfoot-amd-<%=pkg.version%>.js',
+        dest: 'build/bigfoot-amd-<%=pkg.version%>.min.js'
       }
     }
 
