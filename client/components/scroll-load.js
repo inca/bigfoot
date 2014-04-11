@@ -12,7 +12,7 @@ $.bigfoot.install('[data-load]', function() {
       var viewBottom = wnd.scrollTop() + wnd.height();
       if (block.offset().top < viewBottom)
         load();
-    }, 100);
+    }, 200);
   }
 
   function load() {

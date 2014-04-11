@@ -4,8 +4,8 @@ $.bigfoot.install('a[data-load-into]', function() {
   var container = $(a.attr("data-load-into"));
   if (!(container.size() > 0) || !url)
     return;
-  var classes = a.attr("data-classes");
-  var styles = a.attr("data-styles");
+  var classes = a.attr("data-class");
+  var styles = a.attr("data-style");
   a.click(function(ev) {
     ev.preventDefault();
     var ph = $.bigfoot.placeholder();

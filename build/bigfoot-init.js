@@ -99,38 +99,39 @@ $.bigfoot = {
 };
 
 },{}],3:[function(require,module,exports){
-'use strict';
-
 (function($) {
 
-  require("./jquery-ext");
-  require("./jquery-sha256");
-
-  require("./bigfoot");
-  require("./notices");
-  require("./viewport");
-  require("./ajax");
-  require("./ibox");
-
-  require("./components/commons");
-  require("./components/forms");
-  require("./components/switch");
-  require("./components/toggler");
-  require("./components/stashed");
-  require("./components/scroll-load");
-  require("./components/checkbox-toggle");
-  require("./components/retina");
-  require("./components/load-into");
-  require("./components/lightform");
+  require('./modules');
 
   $(function() {
     $.bigfoot.init($("body"));
   });
 
 })(jQuery);
+},{"./modules":4}],4:[function(require,module,exports){
+require("../jquery-ext");
+require("../jquery-sha256");
+
+require("../bigfoot");
+require("../notices");
+require("../viewport");
+require("../ajax");
+require("../ibox");
+
+require("../components/commons");
+require("../components/forms");
+require("../components/switch");
+require("../components/toggler");
+require("../components/scroll-load");
+require("../components/checkbox-toggle");
+require("../components/retina");
+require("../components/load-into");
+require("../components/lightform");
+require("../components/sticky");
 
 
-},{"./ajax":1,"./bigfoot":2,"./components/checkbox-toggle":4,"./components/commons":5,"./components/forms":6,"./components/lightform":7,"./components/load-into":8,"./components/retina":9,"./components/scroll-load":10,"./components/stashed":11,"./components/switch":12,"./components/toggler":13,"./ibox":14,"./jquery-ext":15,"./jquery-sha256":16,"./notices":17,"./viewport":18}],4:[function(require,module,exports){
+
+},{"../ajax":1,"../bigfoot":2,"../components/checkbox-toggle":5,"../components/commons":6,"../components/forms":7,"../components/lightform":8,"../components/load-into":9,"../components/retina":10,"../components/scroll-load":11,"../components/sticky":12,"../components/switch":13,"../components/toggler":14,"../ibox":15,"../jquery-ext":16,"../jquery-sha256":17,"../notices":18,"../viewport":19}],5:[function(require,module,exports){
 $.bigfoot.install('input[type="checkbox"][data-toggle]', function() {
   var input = $(this);
   var selector = input.attr('data-toggle');
@@ -159,7 +160,7 @@ $.bigfoot.install('input[type="checkbox"][data-toggle]', function() {
     });
 });
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 $.bigfoot.placeholder = function() {
   return $('<div class="loading"/>')
 };
@@ -214,7 +215,7 @@ $.bigfoot.install('[data-hide]', function() {
     });
 });
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 $.bigfoot.install('form', function() {
@@ -438,7 +439,7 @@ $.bigfoot.install("form.unload-warn", function() {
 
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 $.bigfoot.install('[data-method][data-action]', function() {
   var e = $(this);
   var method = e.attr("data-method").toLowerCase();
@@ -466,15 +467,15 @@ $.bigfoot.install('[data-method][data-action]', function() {
   });
 });
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 $.bigfoot.install('a[data-load-into]', function() {
   var a = $(this);
   var url = a.attr("href");
   var container = $(a.attr("data-load-into"));
   if (!(container.size() > 0) || !url)
     return;
-  var classes = a.attr("data-classes");
-  var styles = a.attr("data-styles");
+  var classes = a.attr("data-class");
+  var styles = a.attr("data-style");
   a.click(function(ev) {
     ev.preventDefault();
     var ph = $.bigfoot.placeholder();
@@ -504,7 +505,7 @@ $.bigfoot.install('a[data-load-into]', function() {
   });
 });
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 $.bigfoot.isRetina = function() {
   var mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
                       (min--moz-device-pixel-ratio: 1.5),\
@@ -533,7 +534,7 @@ $.bigfoot.install('img.retina', function() {
 
 });
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 $.bigfoot.install('[data-load]', function() {
 
   var block = $(this)
@@ -548,7 +549,7 @@ $.bigfoot.install('[data-load]', function() {
       var viewBottom = wnd.scrollTop() + wnd.height();
       if (block.offset().top < viewBottom)
         load();
-    }, 100);
+    }, 200);
   }
 
   function load() {
@@ -589,86 +590,57 @@ $.bigfoot.install('[data-load]', function() {
 
 });
 
-},{}],11:[function(require,module,exports){
-$.bigfoot.msg['changes.dirty'] = "Changes not saved.";
-$.bigfoot.msg['changes.revert'] = "Revert changes";
-
-$.bigfoot.install('textarea.stashed', function() {
-  var textarea = $(this);
-
-  // Id attribute on textarea is mandatory
-  var id = textarea.attr("id");
-  if (!id)
-    return;
-  // Save server value on textarea element
-  textarea[0].__originalValue = textarea.val();
-  // Key combines current URL with textarea's ID
-  var key = $.sha256(location.href.replace(/\?.*/g, "")) + ":" + id;
-  // Init stashed value
-  var stashed = window.localStorage.getItem(key);
-  if (stashed) {
-    textarea.val(stashed);
-    updateMark();
-  }
-  // Values get updated on every keystroke
-  textarea.unbind(".autosave")
-    .bind("keyup.bigfoot.autosave", function() {
-      var value = textarea.val();
-      if (value == getOriginalValue())
-        localStorage.removeItem(key);
-      else
-        localStorage.setItem(key, value);
-      updateMark();
-    });
-  // Stashed value should be clean on postSubmit if form exists
-  var form = textarea.parents("form");
-  if (form)
-    form.bind("postSubmit.bigfoot.autosave", function() {
-      window.localStorage.removeItem(key);
-      textarea[0].__originalValue = textarea.val();
-      updateMark();
-    });
-
-  function getOriginalValue() {
-    return textarea[0].__originalValue;
-  }
-
-  function isDirty() {
-    return textarea[0].__dirty == true;
-  }
-
-  function markDirty() {
-    if (isDirty()) return;
-    var warningBlock = $('<div class="dirty"></div>');
-    warningBlock.text($.bigfoot.msg['changes.dirty']);
-    var revertLink = $('<a href="javascript:;" class="revert"></a>');
-    revertLink.attr("title", $.bigfoot.msg['changes.revert']);
-    revertLink.bind("click.bigfoot.autosave", revert);
-    warningBlock.append(revertLink);
-    textarea.after(warningBlock);
-    textarea[0].__dirty = true;
-  }
-
-  function markClean() {
-    if (!isDirty()) return;
-    $("+ .dirty", textarea).remove();
-    textarea[0].__dirty = false;
-  }
-
-  function updateMark() {
-    if (getOriginalValue() == textarea.val())
-      markClean();
-    else markDirty();
-  }
-
-  function revert() {
-    textarea.val(getOriginalValue());
-    window.localStorage.removeItem(key);
-    markClean();
-  }
-});
-
 },{}],12:[function(require,module,exports){
+$.bigfoot.install('[data-sticky]', function() {
+  var sticky = $(this)
+    , parent = $(this.parentNode)
+    , wnd = $(window)
+    , oldY = 0
+    , enabled = true;
+  function update() {
+    if (!enabled)
+      return;
+    var newY = oldY
+      , windowHeight = wnd.height()
+      , stickyHeight = sticky.height()
+      , viewTop = wnd.scrollTop()
+      , viewBottom = viewTop + windowHeight
+      , parentTop = parent.offset().top
+      , parentBottom = parentTop + parent.height()
+      , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
+      , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
+      , alwaysAtTop = stickyHeight < windowHeight && boundTop + stickyHeight < boundBottom;
+    if (boundTop > oldY && boundBottom < oldY + stickyHeight)
+      return;
+    if (boundTop < oldY || alwaysAtTop) {
+      newY = boundTop;
+    } else if (boundBottom > oldY + stickyHeight) {
+      newY = boundBottom - stickyHeight;
+    }
+    if (newY != oldY) {
+      oldY = newY;
+      sticky.css('transform', 'translateY(' + oldY + 'px)')
+        .css('-moz-transform', 'translateY(' + oldY + 'px)')
+        .css('-webkit-transform', 'translateY(' + oldY + 'px)');
+    }
+  }
+  function reinit() {
+    var _float = sticky.css('float');
+    var _enabled = _float == 'left' || _float == 'right';
+    // Handle special case where "switching" occurs
+    if (enabled != _enabled) {
+      sticky.removeAttr('style');
+      oldY = 0;
+    }
+    enabled = _enabled;
+    update();
+  }
+  // Bind to events
+  reinit();
+  wnd.scrollStop(update);
+  wnd.resizeStop(reinit);
+});
+},{}],13:[function(require,module,exports){
 $.bigfoot.switcher = {
 
   hideAll: function(currentTarget) {
@@ -687,6 +659,7 @@ $.bigfoot.switcher = {
 };
 
 // Hide all open targets on click outside
+
 $(function() {
   $("html").bind("click.bigfoot.switcher", function() {
     $.bigfoot.switcher.hideAll();
@@ -755,7 +728,7 @@ $.bigfoot.install('[data-switch]', function() {
 
 });
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 $.bigfoot.install('.toggler', function() {
 
   var toggler = $(this);
@@ -805,7 +778,7 @@ $.bigfoot.install('.toggler', function() {
   }
 });
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 $.bigfoot.msg["Close"] = "Close";
@@ -895,7 +868,7 @@ $.bigfoot.ibox = {
   }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 $.fn.lookup = function(selector) {
   var elems = this.find(selector);
   if (this.is(selector))
@@ -1010,10 +983,10 @@ $.fn.resizeStop = function(cb) {
   });
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
   (function(f){var m=8;var k=function(q,t){var s=(q&65535)+(t&65535);var r=(q>>16)+(t>>16)+(s>>16);return(r<<16)|(s&65535)};var e=function(r,q){return(r>>>q)|(r<<(32-q))};var g=function(r,q){return(r>>>q)};var a=function(q,s,r){return((q&s)^((~q)&r))};var d=function(q,s,r){return((q&s)^(q&r)^(s&r))};var h=function(q){return(e(q,2)^e(q,13)^e(q,22))};var b=function(q){return(e(q,6)^e(q,11)^e(q,25))};var p=function(q){return(e(q,7)^e(q,18)^g(q,3))};var l=function(q){return(e(q,17)^e(q,19)^g(q,10))};var c=function(r,s){var E=new Array(1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298);var t=new Array(1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225);var q=new Array(64);var G,F,D,C,A,y,x,w,v,u;var B,z;r[s>>5]|=128<<(24-s%32);r[((s+64>>9)<<4)+15]=s;for(var v=0;v<r.length;v+=16){G=t[0];F=t[1];D=t[2];C=t[3];A=t[4];y=t[5];x=t[6];w=t[7];for(var u=0;u<64;u++){if(u<16){q[u]=r[u+v]}else{q[u]=k(k(k(l(q[u-2]),q[u-7]),p(q[u-15])),q[u-16])}B=k(k(k(k(w,b(A)),a(A,y,x)),E[u]),q[u]);z=k(h(G),d(G,F,D));w=x;x=y;y=A;A=k(C,B);C=D;D=F;F=G;G=k(B,z)}t[0]=k(G,t[0]);t[1]=k(F,t[1]);t[2]=k(D,t[2]);t[3]=k(C,t[3]);t[4]=k(A,t[4]);t[5]=k(y,t[5]);t[6]=k(x,t[6]);t[7]=k(w,t[7])}return t};var j=function(t){var s=Array();var q=(1<<m)-1;for(var r=0;r<t.length*m;r+=m){s[r>>5]|=(t.charCodeAt(r/m)&q)<<(24-r%32)}return s};var n=function(s){var r="0123456789abcdef";var t="";for(var q=0;q<s.length*4;q++){t+=r.charAt((s[q>>2]>>((3-q%4)*8+4))&15)+r.charAt((s[q>>2]>>((3-q%4)*8))&15)}return t};var o=function(s,v){var u=j(s);if(u.length>16){u=core_sha1(u,s.length*m)}var q=Array(16),t=Array(16);for(var r=0;r<16;r++){q[r]=u[r]^909522486;t[r]=u[r]^1549556828}var w=c(q.concat(j(v)),512+v.length*m);return c(t.concat(w),512+256)};var i=function(q){q=typeof q=="object"?f(q).val():q.toString();return q};f.extend({sha256:function(q){q=i(q);return n(c(j(q),q.length*m))},sha256hmac:function(q,r){q=i(q);r=i(r);return n(o(q,r))},sha256config:function(q){m=parseInt(q)||8}});f.fn.sha256=function(r){f.sha256config(r);var q=i(f(this).val());var s=f.sha256(q);f.sha256config(8);return s}})(jQuery);
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 $.bigfoot.notices = {
 
   timeout: function() {
@@ -1129,7 +1102,7 @@ window.addEventListener("keydown", function(ev) {
 $(function() {
   $.bigfoot.notices.unstash();
 });
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 $.bigfoot.msg['standby'] = "Please wait...";

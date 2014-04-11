@@ -16,6 +16,7 @@ $.bigfoot.switcher = {
 };
 
 // Hide all open targets on click outside
+
 $(function() {
   $("html").bind("click.bigfoot.switcher", function() {
     $.bigfoot.switcher.hideAll();

@@ -11,16 +11,19 @@ module.exports = function(grunt) {
 
     browserify: {
       basic: {
-        src: ['client/bundle.js'],
-        dest: 'build/bigfoot-<%=pkg.version%>.js'
+        src: ['client/bundle/init.js'],
+        dest: 'build/bigfoot-init.js'
       },
       noinit: {
-        src: ['client/bundle-noinit.js'],
-        dest: 'build/bigfoot-noinit-<%=pkg.version%>.js'
+        src: ['client/bundle/noinit.js'],
+        dest: 'build/bigfoot-noinit.js'
       },
       amd: {
-        src: ['client/bundle-amd.js'],
-        dest: 'build/bigfoot-amd-<%=pkg.version%>.js'
+        src: ['client/bundle/amd.js'],
+        dest: 'build/bigfoot-amd.js',
+        options: {
+          standalone: 'bigfoot'
+        }
       }
     },
 
@@ -29,16 +32,16 @@ module.exports = function(grunt) {
         banner: '/*! Bigfoot v.<%=pkg.version%> */\n'
       },
       basic: {
-        src: 'build/bigfoot-<%=pkg.version%>.js',
-        dest: 'build/bigfoot-<%=pkg.version%>.min.js'
+        src: 'build/bigfoot-init.js',
+        dest: 'build/bigfoot-init.min.js'
       },
       noinit: {
-        src: 'build/bigfoot-noinit-<%=pkg.version%>.js',
-        dest: 'build/bigfoot-noinit-<%=pkg.version%>.min.js'
+        src: 'build/bigfoot-noinit.js',
+        dest: 'build/bigfoot-noinit.min.js'
       },
       amd: {
-        src: 'build/bigfoot-amd-<%=pkg.version%>.js',
-        dest: 'build/bigfoot-amd-<%=pkg.version%>.min.js'
+        src: 'build/bigfoot-amd.js',
+        dest: 'build/bigfoot-amd.min.js'
       }
     }
 
