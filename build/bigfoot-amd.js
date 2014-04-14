@@ -442,7 +442,7 @@ $.bigfoot.install("form.unload-warn", function() {
 },{}],8:[function(require,module,exports){
 $.bigfoot.install('[data-method][data-action]', function() {
   var e = $(this);
-  var method = e.attr("data-method").toLowerCase();
+  var method = e.attr("data-method").toUpperCase();
   var action = e.attr("data-action");
   e.click(function(ev) {
     ev.preventDefault();
@@ -453,6 +453,7 @@ $.bigfoot.install('[data-method][data-action]', function() {
       data: { "__" : new Date().getTime().toString() },
       type: method,
       success: function(data) {
+        e.trigger("postSubmit", data);
         $.bigfoot.ajax.processResponse(data);
         if (!data.redirect) {
           $.bigfoot.viewport.hideStandBy();
@@ -596,7 +597,8 @@ $.bigfoot.install('[data-sticky]', function() {
     , parent = $(this.parentNode)
     , wnd = $(window)
     , oldY = 0
-    , enabled = true;
+    , enabled = true
+    , continuous = $(this).attr('data-sticky') == 'continuous';
   function update() {
     if (!enabled)
       return;
@@ -637,7 +639,10 @@ $.bigfoot.install('[data-sticky]', function() {
   }
   // Bind to events
   reinit();
-  wnd.scrollStop(update);
+  if (continuous)
+    wnd.scroll(update);
+  else
+    wnd.scrollStop(update);
   wnd.resizeStop(reinit);
 });
 },{}],13:[function(require,module,exports){

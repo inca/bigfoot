@@ -3,7 +3,8 @@ $.bigfoot.install('[data-sticky]', function() {
     , parent = $(this.parentNode)
     , wnd = $(window)
     , oldY = 0
-    , enabled = true;
+    , enabled = true
+    , continuous = $(this).attr('data-sticky') == 'continuous';
   function update() {
     if (!enabled)
       return;
@@ -44,6 +45,9 @@ $.bigfoot.install('[data-sticky]', function() {
   }
   // Bind to events
   reinit();
-  wnd.scrollStop(update);
+  if (continuous)
+    wnd.scroll(update);
+  else
+    wnd.scrollStop(update);
   wnd.resizeStop(reinit);
 });
