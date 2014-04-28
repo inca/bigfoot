@@ -852,7 +852,11 @@ $.bigfoot.ibox = {
         });
       $("a.close", content)
         .add(_close)
-        .bind("click.ibox", ibox.close);
+        .bind("click.ibox", function(ev) {
+          ibox.close();
+          ev.preventDefault();
+          return false;
+        });
     });
   },
 
