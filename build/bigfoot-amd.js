@@ -681,7 +681,6 @@ $.bigfoot.install('[data-switch]', function() {
 
   var target = $(switcher.attr("data-switch"));
   target.addClass("switch-target");
-  var url = target.attr('data-url');
 
   if (switcher.hasClass("switch-stay"))
     target.click(function(ev) {
@@ -691,28 +690,6 @@ $.bigfoot.install('[data-switch]', function() {
   function update() {
     if (target.is(":visible")) {
       switcher.addClass(cssClass);
-      if (url) { // If data-url attr exists, load remote content into target
-        target.empty();
-        // Insert placeholder into container
-        var ph = $.bigfoot.placeholder();
-        target.append(ph);
-        // Do AJAX
-        $.bigfoot.log("[dropdown] GET " + url);
-        $.ajax({
-          dataType: "html",
-          url: url,
-          type: 'get',
-          success: function(data) {
-            ph.remove();
-            target.append(data);
-            $.bigfoot.init(target);
-          },
-          error: function(xhr) {
-            ph.remove();
-            $.bigfoot.ajax.processErrors(xhr);
-          }
-        });
-      }
     } else {
       switcher.removeClass(cssClass);
     }
@@ -721,15 +698,29 @@ $.bigfoot.install('[data-switch]', function() {
   update();
 
   function toggle() {
-    switcher.toggleClass(cssClass);
     target.toggle(0, update);
   }
 
-  switcher.bind("click.bigfoot.switch", function() {
-    $.bigfoot.switcher.hideAll(target[0]);
-    toggle();
-    return false;
-  });
+  function close() {
+    target.hide(0, update);
+  }
+
+  switcher
+    .unbind('.bigfoot.switch')
+    .bind("click.bigfoot.switch", function(ev) {
+      ev.preventDefault();
+      $.bigfoot.switcher.hideAll(target[0]);
+      toggle();
+      return false;
+    });
+
+  $(switcher).find('.close')
+    .unbind('.bigfoot.switch')
+    .bind('click.bigfoot.switch', function(ev) {
+      ev.preventDefault();
+      close();
+      return false;
+    });
 
 });
 
