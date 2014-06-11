@@ -276,7 +276,7 @@ $.bigfoot.install('form.partial', function() {
     if (multipart)
       $.bigfoot.log(method + " " + action + " [multipart data]");
     else {
-      params = $(":not(.exclude)", form).serializeArray();
+      params = $(":input:not(.exclude)", form).serializeArray();
       params.push({
         name: "__",
         value: new Date().getTime().toString()
@@ -366,7 +366,7 @@ $.bigfoot.install('form[data-load-into]', function() {
     submits.hide();
     cnt.empty().append(ph);
     // Prepare params
-    var params = $(":not(.exclude)", form).serializeArray();
+    var params = $(":input:not(.exclude)", form).serializeArray();
     params.push({"name": "__", "value": new Date().getTime().toString()});
     // Execute handlers
     if (!form[0].executeHandlers(params)) { // Submit prevented
@@ -407,7 +407,7 @@ $.bigfoot.install("form.unload-warn", function() {
   form.bind("submit.bigfoot.unload-warn", updateInitialState);
 
   function updateInitialState() {
-    var data = $(":not(.exclude)", form).serialize();
+    var data = $(":input:not(.exclude)", form).serialize();
     form.data("initial-state", data);
   }
 
@@ -415,7 +415,7 @@ $.bigfoot.install("form.unload-warn", function() {
     .bind("beforeunload.bigfoot.unload-warn", function() {
       var changedForms = $("form.unload-warn").filter(function() {
         var f = $(this);
-        var currentState = $(":not(.exclude)", f).serialize();
+        var currentState = $(":input:not(.exclude)", f).serialize();
         var initialState = f.data("initial-state");
         return currentState != initialState && f.is(":visible")
       });
@@ -426,7 +426,7 @@ $.bigfoot.install("form.unload-warn", function() {
     .bind("viewportUnload.bigfoot.unload-warn", function(ev) {
       var changedForms = $("form.unload-warn").filter(function() {
         var f = $(this);
-        var currentState = $(":not(.exclude)", f).serialize();
+        var currentState = $(":input:not(.exclude)", f).serialize();
         var initialState = f.data("initial-state");
         return currentState != initialState;
       });
