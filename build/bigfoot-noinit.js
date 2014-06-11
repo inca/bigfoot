@@ -868,6 +868,8 @@ $.bigfoot.ibox = {
 
 },{}],16:[function(require,module,exports){
 $.fn.lookup = function(selector) {
+  if (!selector)
+    return this;
   var elems = this.find(selector);
   if (this.is(selector))
     return elems.add(this);
