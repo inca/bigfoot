@@ -655,9 +655,9 @@ $.bigfoot.install('[data-sticky]', function() {
             sticky.style.OTransform =
               sticky.style.transform =
                 'translateY(' + oldY + 'px)';
-      if (newY == 0) $sticky.addClass('atTop');
-      else $sticky.removeClass('atTop');
     }
+    if (newY == 0) $sticky.addClass('atTop');
+    else $sticky.removeClass('atTop');
   }
 
   // Bind to events
