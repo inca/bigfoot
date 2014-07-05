@@ -3,9 +3,7 @@ $.bigfoot.install('[data-sticky]', function() {
     , $sticky = $(this)
     , $parent = $(this.parentNode)
     , $wnd = $(window)
-    , confStr = $sticky.attr('data-sticky')
-    , enabled = true
-    , detectBounds = confStr.indexOf('detect-bounds') >= 0;
+    , enabled = true;
 
   var updating = false
     , raf = window.requestAnimationFrame;
@@ -52,14 +50,8 @@ $.bigfoot.install('[data-sticky]', function() {
       return;
     if (boundTop < oldY || alwaysAtTop) {
       newY = boundTop;
-      if (detectBounds)
-        $sticky.addClass('boundTop');
     } else if (boundBottom > oldY + stickyHeight) {
       newY = boundBottom - stickyHeight;
-      if (detectBounds)
-        $sticky.addClass('boundBottom');
-    } else if (detectBounds) {
-      $sticky.removeClass('boundTop').removeClass('boundBottom');
     }
     if (newY != oldY) {
       oldY = newY;
@@ -69,6 +61,8 @@ $.bigfoot.install('[data-sticky]', function() {
             sticky.style.OTransform =
               sticky.style.transform =
                 'translateY(' + oldY + 'px)';
+      if (newY == 0) $sticky.addClass('atTop');
+      else $sticky.removeClass('atTop');
     }
   }
 
