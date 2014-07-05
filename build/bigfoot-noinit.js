@@ -595,8 +595,11 @@ $.bigfoot.install('[data-sticky]', function() {
     , $sticky = $(this)
     , $parent = $(this.parentNode)
     , $wnd = $(window)
+    , confStr = $sticky.attr('data-sticky')
     , enabled = true
-    , updating = false
+    , detectBounds = confStr.indexOf('detect-bounds') >= 0;
+
+  var updating = false
     , raf = window.requestAnimationFrame;
 
   var oldY, viewTop, windowHeight, stickyHeight, parentTop, parentBottom;
@@ -605,12 +608,11 @@ $.bigfoot.install('[data-sticky]', function() {
     var _float = $sticky.css('float');
     var _enabled = _float == 'left' || _float == 'right';
     // Handle special case where "switching" occurs
-    if (enabled != _enabled) {
+    if (enabled != _enabled)
       $sticky.removeAttr('style');
-      oldY = 0; // TODO remove this?
-    }
+    // Recalc dimensions
     enabled = _enabled;
-    oldY = 0;  // TODO Or this?
+    oldY = 0;
     viewTop = $wnd.scrollTop();
     windowHeight = $wnd.height();
     stickyHeight = $sticky.height();
@@ -642,8 +644,14 @@ $.bigfoot.install('[data-sticky]', function() {
       return;
     if (boundTop < oldY || alwaysAtTop) {
       newY = boundTop;
+      if (detectBounds)
+        $sticky.addClass('boundTop');
     } else if (boundBottom > oldY + stickyHeight) {
       newY = boundBottom - stickyHeight;
+      if (detectBounds)
+        $sticky.addClass('boundBottom');
+    } else if (detectBounds) {
+      $sticky.removeClass('boundTop').removeClass('boundBottom');
     }
     if (newY != oldY) {
       oldY = newY;
