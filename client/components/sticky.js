@@ -40,6 +40,8 @@ $.bigfoot.install('[data-sticky]', function() {
   }
 
   function update() {
+    if (!enabled)
+      return;
     var newY = oldY
       , viewBottom = viewTop + windowHeight
       , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
