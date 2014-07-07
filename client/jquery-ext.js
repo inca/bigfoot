@@ -113,3 +113,26 @@ $.fn.resizeStop = function(cb) {
     }, 100);
   });
 };
+
+// Events on scroll per animation frame
+
+$.fn.scrollAnim = function(cb) {
+
+  var updating = false
+    , raf = window.requestAnimationFrame;
+
+  if (typeof raf != 'function')
+    return $(this).scroll(cb);
+
+  function onScroll(ev) {
+    if (!updating)
+      raf(function() {
+        updating = false;
+        cb(ev);
+      });
+    updating = true;
+  }
+
+  return $(this).bind('scroll', onScroll);
+
+};

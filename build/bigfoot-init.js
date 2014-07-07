@@ -599,9 +599,6 @@ $.bigfoot.install('[data-sticky]', function() {
     , $wnd = $(window)
     , enabled = true;
 
-  var updating = false
-    , raf = window.requestAnimationFrame;
-
   var oldY, viewTop, windowHeight, stickyHeight, parentTop, parentBottom;
 
   function reinit() {
@@ -621,27 +618,15 @@ $.bigfoot.install('[data-sticky]', function() {
     update();
   }
 
-  function onScroll() {
-    if (!enabled)
-      return;
-    viewTop = $wnd.scrollTop();
-    requestUpdate();
-  }
-
-  function requestUpdate() {
-    if (!updating) raf(update);
-    updating = true;
-  }
-
   function update() {
     if (!enabled)
       return;
     var newY = oldY
+      , viewTop = $wnd.scrollTop()
       , viewBottom = viewTop + windowHeight
       , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
       , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
       , alwaysAtTop = stickyHeight < windowHeight && boundTop + stickyHeight < boundBottom;
-    updating = false;
     if (boundTop > oldY && boundBottom < oldY + stickyHeight)
       return;
     if (boundTop < oldY || alwaysAtTop) {
@@ -665,7 +650,7 @@ $.bigfoot.install('[data-sticky]', function() {
   // Bind to events
   reinit();
   $wnd.resizeStop(reinit);
-  $wnd.scroll(onScroll);
+  $wnd.scrollAnim(update);
 
 });
 },{}],13:[function(require,module,exports){
@@ -1006,6 +991,29 @@ $.fn.resizeStop = function(cb) {
       cb.call(elem, ev);
     }, 100);
   });
+};
+
+// Events on scroll per animation frame
+
+$.fn.scrollAnim = function(cb) {
+
+  var updating = false
+    , raf = window.requestAnimationFrame;
+
+  if (typeof raf != 'function')
+    return $(this).scroll(cb);
+
+  function onScroll(ev) {
+    if (!updating)
+      raf(function() {
+        updating = false;
+        cb(ev);
+      });
+    updating = true;
+  }
+
+  return $(this).bind('scroll', onScroll);
+
 };
 
 },{}],17:[function(require,module,exports){

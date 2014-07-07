@@ -5,9 +5,6 @@ $.bigfoot.install('[data-sticky]', function() {
     , $wnd = $(window)
     , enabled = true;
 
-  var updating = false
-    , raf = window.requestAnimationFrame;
-
   var oldY, viewTop, windowHeight, stickyHeight, parentTop, parentBottom;
 
   function reinit() {
@@ -27,27 +24,15 @@ $.bigfoot.install('[data-sticky]', function() {
     update();
   }
 
-  function onScroll() {
-    if (!enabled)
-      return;
-    viewTop = $wnd.scrollTop();
-    requestUpdate();
-  }
-
-  function requestUpdate() {
-    if (!updating) raf(update);
-    updating = true;
-  }
-
   function update() {
     if (!enabled)
       return;
     var newY = oldY
+      , viewTop = $wnd.scrollTop()
       , viewBottom = viewTop + windowHeight
       , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
       , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
       , alwaysAtTop = stickyHeight < windowHeight && boundTop + stickyHeight < boundBottom;
-    updating = false;
     if (boundTop > oldY && boundBottom < oldY + stickyHeight)
       return;
     if (boundTop < oldY || alwaysAtTop) {
@@ -71,6 +56,6 @@ $.bigfoot.install('[data-sticky]', function() {
   // Bind to events
   reinit();
   $wnd.resizeStop(reinit);
-  $wnd.scroll(onScroll);
+  $wnd.scrollAnim(update);
 
 });
