@@ -45,10 +45,9 @@ $.bigfoot.install('[data-load]', function() {
     });
   }
 
-  // Bind on window scroll
+  // Bind on window scroll and on init.
+  checkAndLoad();
+
   wnd.unbind(eventKey).bind(eventKey, checkAndLoad);
-
-  $(checkAndLoad);  // And on DOM ready
-
 
 });

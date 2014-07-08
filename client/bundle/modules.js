@@ -17,5 +17,7 @@ require("../components/retina");
 require("../components/load-into");
 require("../components/lightform");
 require("../components/sticky");
+require("../components/classOnScroll");
+require("../components/multiselect");
 
 

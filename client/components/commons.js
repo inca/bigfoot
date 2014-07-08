@@ -38,9 +38,12 @@ $.bigfoot.install('[data-show]', function() {
   var elem = $(this);
   elem.unbind(".bigfoot.show")
     .bind("click.bigfoot.show", function() {
-      $(elem.attr("data-show")).show(0, function() {
+      var target = $(elem.attr("data-show"));
+      target.show(0, function() {
         // Special case if combined with data-set-focus
         $(elem.attr("data-set-focus")).focus();
+        if (elem.hasClass('scrollTo'))
+          target.scrollTo();
       });
     });
 });
