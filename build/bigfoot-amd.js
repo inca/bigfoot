@@ -569,12 +569,16 @@ $.bigfoot.install('form.multiselect', function() {
       });
     }
     selectAll.prop('checked', count == selectItems.size());
+    selectAll.prop('indeterminate',
+      count < selectItems.size() && count > 0);
     selectBy.each(function() {
       var trigger = $(this)
         , selector = trigger.attr('data-selector')
         , items = selectItems.filter(selector)
         , selected = items.filter(':checked');
       trigger.prop('checked', items.size() == selected.size());
+      trigger.prop('indeterminate',
+        selected.size() < items.size() && selected.size() > 0);
     });
   }
 
@@ -599,6 +603,7 @@ $.bigfoot.install('form.multiselect', function() {
 
   update();
 });
+
 },{}],12:[function(require,module,exports){
 $.bigfoot.isRetina = function() {
   var mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
