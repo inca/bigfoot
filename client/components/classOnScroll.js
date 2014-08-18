@@ -17,5 +17,6 @@ $.bigfoot.install('[data-class-on-scroll]', function() {
 
   checkAndUpdate();
   wnd.scrollAnim(checkAndUpdate);
+  wnd.on('sizeChanged', checkAndUpdate);
 
 });

@@ -26,6 +26,7 @@ $.bigfoot.install('a[data-load-into]', function() {
         ph.replaceWith(content).remove();
         $(window).scrollTop(scrollTop);
         $.bigfoot.init(content);
+        $(window).trigger('sizeChanged');
       },
       error: function() {
         ph.remove();

@@ -180,6 +180,7 @@ $.bigfoot.install('[data-class-on-scroll]', function() {
 
   checkAndUpdate();
   wnd.scrollAnim(checkAndUpdate);
+  wnd.on('sizeChanged', checkAndUpdate);
 
 });
 
@@ -523,6 +524,7 @@ $.bigfoot.install('a[data-load-into]', function() {
         ph.replaceWith(content).remove();
         $(window).scrollTop(scrollTop);
         $.bigfoot.init(content);
+        $(window).trigger('sizeChanged');
       },
       error: function() {
         ph.remove();
@@ -671,6 +673,7 @@ $.bigfoot.install('[data-load]', function() {
         content.append(data);
         ph.replaceWith(content).remove();
         $.bigfoot.init(content);
+        $(window).trigger('sizeChanged');
       },
       error: function() {
         $.bigfoot.log("Failed to load " + url);
@@ -746,8 +749,10 @@ $.bigfoot.install('[data-sticky]', function() {
   reinit();
   $wnd.resizeStop(reinit);
   $wnd.scrollAnim(update);
+  $wnd.on('sizeChanged', reinit);
 
 });
+
 },{}],15:[function(require,module,exports){
 $.bigfoot.switcher = {
 

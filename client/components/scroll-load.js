@@ -37,6 +37,7 @@ $.bigfoot.install('[data-load]', function() {
         content.append(data);
         ph.replaceWith(content).remove();
         $.bigfoot.init(content);
+        $(window).trigger('sizeChanged');
       },
       error: function() {
         $.bigfoot.log("Failed to load " + url);

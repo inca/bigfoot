@@ -57,5 +57,6 @@ $.bigfoot.install('[data-sticky]', function() {
   reinit();
   $wnd.resizeStop(reinit);
   $wnd.scrollAnim(update);
+  $wnd.on('sizeChanged', reinit);
 
 });
