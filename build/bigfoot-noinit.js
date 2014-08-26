@@ -1,4 +1,4 @@
-;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 $.bigfoot.msg['ajax.authRequired'] = "You need to login to continue.";
 $.bigfoot.msg['ajax.accessDenied'] = "You have insufficient permissions to access the resource.";
 $.bigfoot.msg['ajax.failed'] = "Your request could not be processed. Please contact technical support.";
@@ -226,6 +226,7 @@ $.bigfoot.install('[data-show]', function() {
     .bind("click.bigfoot.show", function() {
       var target = $(elem.attr("data-show"));
       target.show(0, function() {
+        $(window).trigger('sizeChanged');
         // Special case if combined with data-set-focus
         $(elem.attr("data-set-focus")).focus();
         if (elem.hasClass('scrollTo'))
@@ -237,7 +238,9 @@ $.bigfoot.install('[data-show]', function() {
 $.bigfoot.install('[data-hide]', function() {
   $(this).unbind(".bigfoot.hide")
     .bind("click.bigfoot.hide", function() {
-      $($(this).attr("data-hide")).hide();
+      $($(this).attr("data-hide")).hide(0, function() {
+        $(window).trigger('sizeChanged');
+      });
     });
 });
 
@@ -1393,5 +1396,4 @@ if (useHistory)
       });
   });
 
-},{}]},{},[4])
-;
+},{}]},{},[4]);
