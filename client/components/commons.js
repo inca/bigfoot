@@ -40,6 +40,7 @@ $.bigfoot.install('[data-show]', function() {
     .bind("click.bigfoot.show", function() {
       var target = $(elem.attr("data-show"));
       target.show(0, function() {
+        $(window).trigger('sizeChanged');
         // Special case if combined with data-set-focus
         $(elem.attr("data-set-focus")).focus();
         if (elem.hasClass('scrollTo'))
@@ -51,6 +52,8 @@ $.bigfoot.install('[data-show]', function() {
 $.bigfoot.install('[data-hide]', function() {
   $(this).unbind(".bigfoot.hide")
     .bind("click.bigfoot.hide", function() {
-      $($(this).attr("data-hide")).hide();
+      $($(this).attr("data-hide")).hide(0, function() {
+        $(window).trigger('sizeChanged');
+      });
     });
 });
