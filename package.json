@@ -1,10 +1,6 @@
 {
   "name": "bigfoot",
-<<<<<<< HEAD
-  "version": "1.1.15",
-=======
   "version": "1.1.16",
->>>>>>> 00ac733a37ecaa30d35f60b6f0e0fbce3e195546
   "description": "Client-side Application Framework",
   "repository": {
     "type": "git",
