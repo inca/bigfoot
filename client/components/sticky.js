@@ -3,7 +3,8 @@ $.bigfoot.install('[data-sticky]', function() {
     , $sticky = $(this)
     , $parent = $(this.parentNode)
     , $wnd = $(window)
-    , enabled = true;
+    , enabled = true
+    , yOffset = 0;
 
   var oldY, viewTop, windowHeight, stickyHeight, parentTop, parentBottom;
 
@@ -21,6 +22,7 @@ $.bigfoot.install('[data-sticky]', function() {
     stickyHeight = $sticky.height();
     parentTop = $parent.offset().top;
     parentBottom = parentTop + $parent.height();
+    yOffset = $('.stickyOffset').height() || 0;
     update();
   }
 
@@ -28,7 +30,7 @@ $.bigfoot.install('[data-sticky]', function() {
     if (!enabled)
       return;
     var newY = oldY
-      , viewTop = $wnd.scrollTop()
+      , viewTop = $wnd.scrollTop() + yOffset
       , viewBottom = viewTop + windowHeight
       , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
       , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
