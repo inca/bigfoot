@@ -1,3 +1,9 @@
+$.ajaxSetup({
+  headers: {
+    "X-Requested-With": "XMLHttpRequest"
+  }
+});
+
 $.bigfoot.msg['ajax.authRequired'] = "You need to login to continue.";
 $.bigfoot.msg['ajax.accessDenied'] = "You have insufficient permissions to access the resource.";
 $.bigfoot.msg['ajax.failed'] = "Your request could not be processed. Please contact technical support.";
