@@ -31,7 +31,7 @@ $.bigfoot.install('[data-sticky]', function() {
       return;
     var newY = oldY
       , viewTop = $wnd.scrollTop() + yOffset
-      , viewBottom = viewTop + windowHeight
+      , viewBottom = $wnd.scrollTop() + windowHeight
       , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
       , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
       , alwaysAtTop = stickyHeight < windowHeight && boundTop + stickyHeight < boundBottom;
