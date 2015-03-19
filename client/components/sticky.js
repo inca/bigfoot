@@ -1,15 +1,15 @@
 $.bigfoot.install('[data-sticky]', function() {
-  var sticky = this
+  var $wnd = $(window)
     , $sticky = $(this)
     , $parent = $(this.parentNode)
-    , $wnd = $(window)
-    , enabled = true
-    , yOffset = 0;
+    , yPadding = parseInt($sticky.attr('data-y-padding')) || 16
+    , _el = $sticky[0]
+    , enabled = true;
 
-  var oldY, viewTop, windowHeight, stickyHeight, parentTop, parentBottom;
+  var oldY, windowHeight, updating = false;
 
   function reinit() {
-    var _float = $sticky.css('float');
+    var _float = window.getComputedStyle(_el).float;
     var _enabled = _float == 'left' || _float == 'right';
     // Handle special case where "switching" occurs
     if (enabled != _enabled)
@@ -17,48 +17,52 @@ $.bigfoot.install('[data-sticky]', function() {
     // Recalc dimensions
     enabled = _enabled;
     oldY = 0;
-    viewTop = $wnd.scrollTop();
-    windowHeight = $wnd.height();
-    stickyHeight = $sticky.height();
-    parentTop = $parent.offset().top;
-    parentBottom = parentTop + $parent.height();
-    yOffset = $('.stickyOffset').height() || 0;
-    update();
+    windowHeight = window.innerHeight;
+    redraw();
   }
 
-  function update() {
-    if (!enabled)
+  function redraw() {
+    if (!enabled) return;
+    var newY = oldY;
+    var elementBox = _el.getBoundingClientRect();
+    var parentBox = $parent[0].getBoundingClientRect();
+    var boundTop = Math.max(-parentBox.top + yPadding, 0);
+    var boundBottom = Math.min(window.innerHeight - parentBox.top - yPadding, parentBox.height);
+    var alwaysAtTop = elementBox.height < windowHeight &&
+      boundTop + elementBox.height < boundBottom;
+    if (boundTop > oldY && boundBottom < oldY + elementBox.height)
       return;
-    var newY = oldY
-      , viewTop = $wnd.scrollTop() + yOffset
-      , viewBottom = $wnd.scrollTop() + windowHeight
-      , boundTop = Math.max(viewTop + 16, parentTop) - parentTop
-      , boundBottom = Math.min(viewBottom - 16, parentBottom) - parentTop
-      , alwaysAtTop = stickyHeight < windowHeight && boundTop + stickyHeight < boundBottom;
-    if (boundTop > oldY && boundBottom < oldY + stickyHeight)
-      return;
-    if (boundTop < oldY || alwaysAtTop) {
+    if (alwaysAtTop || boundTop < oldY) {
       newY = boundTop;
-    } else if (boundBottom > oldY + stickyHeight) {
-      newY = boundBottom - stickyHeight;
+    } else if (boundBottom > oldY + elementBox.height) {
+      newY = boundBottom - elementBox.height;
     }
     if (newY != oldY) {
       oldY = newY;
-      sticky.style.webkitTransform =
-        sticky.style.MozTransform =
-          sticky.style.msTransform =
-            sticky.style.OTransform =
-              sticky.style.transform =
+      _el.style.webkitTransform =
+        _el.style.MozTransform =
+          _el.style.msTransform =
+            _el.style.OTransform =
+              _el.style.transform =
                 'translateY(' + oldY + 'px)';
     }
     if (newY == 0) $sticky.addClass('atTop');
     else $sticky.removeClass('atTop');
   }
 
+  function onScroll(ev) {
+    if (!updating)
+      window.requestAnimationFrame(function() {
+        updating = false;
+        redraw(ev);
+      });
+    updating = true;
+  }
+
   // Bind to events
   reinit();
   $wnd.resizeStop(reinit);
-  $wnd.scrollAnim(update);
+  $wnd.scroll(redraw);
   $wnd.on('sizeChanged', reinit);
 
 });
